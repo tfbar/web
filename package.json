@@ -1,7 +1,7 @@
 {
-  "name": "tflog",
+  "name": "tfi",
   "version": "1.0.0",
-  "description": "cowsay is a configurable talking cow",
+  "description": "tf easy log",
   "keywords": [
     "cow",
     "cowsay",
@@ -10,20 +10,16 @@
     "talking",
     "ASCII"
   ],
-  "homepage": "https://github.com/piuccio/cowsay",
+  "homepage": "https://github.com/oferca/tf",
   "author": {
-    "name": "Fabio Crisci",
-    "email": "piuccio@gmail.com",
-    "url": "https://github.com/piuccio/"
+    "name": "Ofer Kafry",
+    "email": "ofer.c@hostmail.com",
+    "url": "https://github.com/oferca/tf"
   },
   "license": "MIT",
   "main": "./index",
-  "types": "./index.d.ts",
-  "module": "./build/cowsay.es.js",
-  "browser": "./build/cowsay.umd.js",
   "bin": {
-    "cowsay": "./cli.js",
-    "cowthink": "./cli.js"
+    "log": "./cli.js",
   },
   "files": [
     "index.js",
@@ -35,23 +31,21 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/piuccio/cowsay.git"
+    "url": "https://github.com/oferca/tf.git"
   },
   "scripts": {
-    "prepare": "rollup -c",
-    "test": "tape test/**/*.js | tap-dot",
     "test-init": "./tests/test-init.sh",
     "test-apply": "./tests/test-apply.sh"
   },
   "dependencies": {
-    "get-stdin": "8.0.0",
-    "string-width": "~2.1.1",
-    "strip-final-newline": "2.0.0",
-    "yargs": "15.4.1",
     "find-remove": "^4.1.0",
+    "get-stdin": "8.0.0",
     "https": "^1.0.0",
     "multi-progress-bars": "^5.0.3",
-    "progress": "^2.0.3"
+    "progress": "^2.0.3",
+    "string-width": "~2.1.1",
+    "strip-final-newline": "2.0.0",
+    "yargs": "15.4.1"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "15.0.0",
