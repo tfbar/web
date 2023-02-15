@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 const fs = require("fs")
 const { initFileSystem, saveData, saveTime, getLog, getChangedFiles, averageApplies, averageInits, averagePlans } = require("./methods")
 const { DataPacket } = require("./data-packet");
