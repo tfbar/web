@@ -5,13 +5,13 @@
   "homepage": "https://github.com/oferca/tf",
   "author": {
     "name": "Ofer Kafry",
-    "email": "ofer.c@hostmail.com",
+    "email": "ofer.c@hotmail.com",
     "url": "https://github.com/oferca/tf"
   },
   "license": "MIT",
   "main": "./index",
   "bin": {
-    "log": "./cli.js"
+    "log": "./src/index.js"
   },
   "files": [
     "index.js",
