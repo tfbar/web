@@ -19,7 +19,7 @@
   "license": "MIT",
   "main": "./index",
   "bin": {
-    "log": "./cli.js",
+    "log": "./cli.js"
   },
   "files": [
     "index.js",
@@ -39,22 +39,8 @@
   },
   "dependencies": {
     "find-remove": "^4.1.0",
-    "get-stdin": "8.0.0",
     "https": "^1.0.0",
-    "multi-progress-bars": "^5.0.3",
     "progress": "^2.0.3",
-    "string-width": "~2.1.1",
-    "strip-final-newline": "2.0.0",
-    "yargs": "15.4.1"
-  },
-  "devDependencies": {
-    "@rollup/plugin-commonjs": "15.0.0",
-    "@rollup/plugin-node-resolve": "9.0.0",
-    "execa": "5.0.0",
-    "rollup": "2.26.5",
-    "rollup-plugin-string": "3.0.0",
-    "tap-dot": "2.0.0",
-    "tape": "5.0.1"
   },
   "preferGlobal": true,
   "engines": {
