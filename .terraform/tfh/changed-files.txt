@@ -1,4 +1,3 @@
-cli.js
-index.js
-package-lock.json
+.terraform/tfh/changed-files.txt
+.terraform/tfh/gitlog.txt
 package.json

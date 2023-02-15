@@ -1,0 +1,72 @@
+Acquiring state lock. This may take a few moments...
+data.terraform_remote_state.eks: Reading...
+data.terraform_remote_state.allianz: Reading...
+module.irsa-allianz.module.oidc-provider-data.data.aws_caller_identity.current: Reading...
+module.irsa-allianz.module.oidc-provider-data.data.aws_partition.current: Reading...
+module.irsa-allianz.module.oidc-provider-data.data.aws_partition.current: Read complete after 0s [id=aws]
+module.irsa-allianz.module.oidc-provider-data.data.aws_caller_identity.current: Read complete after 1s [id=829019863018]
+data.terraform_remote_state.allianz: Read complete after 2s
+data.terraform_remote_state.eks: Read complete after 2s
+module.irsa-allianz.data.aws_eks_cluster.eks_cluster: Reading...
+module.irsa-allianz.data.aws_eks_cluster.eks_cluster: Read complete after 1s [id=allianz-eks]
+╷
+│ Error: Unsupported attribute
+│ 
+│   on ../../../../modules/iam/irsa/allianz/policies.tf line 3, in locals:
+│    3:         account_id = var.params.account_id
+│     ├────────────────
+│     │ var.params is object with 9 attributes
+│ 
+│ This object does not have an attribute named "account_id".
+╵
+╷
+│ Error: Unsupported attribute
+│ 
+│   on ../../../../modules/iam/irsa/allianz/policies.tf line 6, in locals:
+│    6:         region_prefix = var.params.region_prefix
+│     ├────────────────
+│     │ var.params is object with 9 attributes
+│ 
+│ This object does not have an attribute named "region_prefix".
+╵
+╷
+│ Error: Unsupported attribute
+│ 
+│   on ../../../../modules/iam/irsa/allianz/policies.tf line 7, in locals:
+│    7:         saas_backups_prepend = var.params.saas-backups-bucket-name
+│     ├────────────────
+│     │ var.params is object with 9 attributes
+│ 
+│ This object does not have an attribute named "saas-backups-bucket-name".
+╵
+╷
+│ Error: Unsupported attribute
+│ 
+│   on ../../../../modules/iam/irsa/allianz/policies.tf line 8, in locals:
+│    8:         clickhouse_storage_s3_name = var.params.clickhouse_storage_s3_name
+│     ├────────────────
+│     │ var.params is object with 9 attributes
+│ 
+│ This object does not have an attribute named "clickhouse_storage_s3_name".
+╵
+╷
+│ Error: Unsupported attribute
+│ 
+│   on ../../../../modules/iam/irsa/allianz/policies.tf line 74, in locals:
+│   74:     clickhousePolicyARN = "arn:aws:iam::${var.params.account_id}:policy/policy-clickhouse-staging-new-eks"
+│     ├────────────────
+│     │ var.params is object with 9 attributes
+│ 
+│ This object does not have an attribute named "account_id".
+╵
+╷
+│ Error: Unsupported attribute
+│ 
+│   on ../../../../modules/iam/irsa/allianz/policies.tf line 77, in locals:
+│   77:     elasticsearchPolicyARN = "arn:aws:iam::${var.params.account_id}:policy/policy-elastic-staging-new-eks"
+│     ├────────────────
+│     │ var.params is object with 9 attributes
+│ 
+│ This object does not have an attribute named "account_id".
+╵
+Releasing state lock. This may take a few moments...

@@ -39,7 +39,9 @@
   },
   "scripts": {
     "prepare": "rollup -c",
-    "test": "tape test/**/*.js | tap-dot"
+    "test": "tape test/**/*.js | tap-dot",
+    "test-init": "./tests/test-init.sh",
+    "test-apply": "./tests/test-apply.sh"
   },
   "dependencies": {
     "get-stdin": "8.0.0",
