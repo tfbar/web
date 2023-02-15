@@ -15,7 +15,11 @@
   },
   "files": [
     "index.js",
-    "cli.js"
+    "cli.js",
+    "src/**"
+  ],
+  "folders": [
+    "src"
   ],
   "repository": {
     "type": "git",

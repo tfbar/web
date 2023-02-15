@@ -1,3 +1,11 @@
 .terraform/tfh/changed-files.txt
 .terraform/tfh/gitlog.txt
-package.json
+cli.js
+data-packet/index.js
+data-packet/methods.js
+display-manager/index.js
+display-manager/methods.js
+display-manager/progress-bar.js
+methods.js
+state-manager/index.js
+state-manager/methods.js

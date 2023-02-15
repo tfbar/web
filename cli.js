@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 const fs = require("fs")
-const { initFileSystem, saveData, saveTime, getLog, getChangedFiles, averageApplies, averageInits, averagePlans } = require("./methods")
-const { DataPacket } = require("./data-packet");
-const { DisplayManager } = require("./display-manager");
-const { StateManager } = require("./state-manager");
+const { initFileSystem, saveData, saveTime, getLog, getChangedFiles, averageApplies, averageInits, averagePlans } = require("./src/methods")
+const { DataPacket } = require("./src/data-packet");
+const { DisplayManager } = require("./src/display-manager");
+const { StateManager } = require("./src/state-manager");
 const outputFilePath = initFileSystem()
 class TerraformOutputHandler{
 
