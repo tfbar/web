@@ -45,7 +45,11 @@
     "get-stdin": "8.0.0",
     "string-width": "~2.1.1",
     "strip-final-newline": "2.0.0",
-    "yargs": "15.4.1"
+    "yargs": "15.4.1",
+    "find-remove": "^4.1.0",
+    "https": "^1.0.0",
+    "multi-progress-bars": "^5.0.3",
+    "progress": "^2.0.3"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "15.0.0",

@@ -1,83 +1,64 @@
-#!/usr/bin/env node
-const yargs = require('yargs')
-	.usage(`
-Usage: $0 [-e eye_string] [-f cowfile] [-h] [-l] [-n] [-T tongue_string] [-W column] [-bdgpstwy] text
-		
-If any command-line arguments are left over after all switches have been processed, they become the cow's message.
-		
-If the program is invoked as cowthink then the cow will think its message instead of saying it.
-`)
-  .options({
-    e: {
-      default: 'oo',
-    },
-    T: {
-      default: '  ',
-    },
-    W: {
-      default: 40,
-      type: 'number',
-    },
-    f: {
-      default: 'default',
-    },
-    think: {
-      type: 'boolean',
-    },
-  })
-  .describe({
-    b: 'Mode: Borg',
-    d: 'Mode: Dead',
-    g: 'Mode: Greedy',
-    p: 'Mode: Paranoia',
-    s: 'Mode: Stoned',
-    t: 'Mode: Tired',
-    w: 'Mode: Wired',
-    y: 'Mode: Youthful',
-    e: "Select the appearance of the cow's eyes.",
-    T:
-      'The tongue is configurable similarly to the eyes through -T and tongue_string.',
-    h: 'Display this help message',
-    n: 'If it is specified, the given message will not be word-wrapped.',
-    W:
-      'Specifies roughly where the message should be wrapped. The default is equivalent to -W 40 i.e. wrap words at or before the 40th column.',
-    f:
-      "Specifies a cow picture file (''cowfile'') to use. It can be either a path to a cow file or the name of one of cows included in the package.",
-    r: 'Select a random cow',
-    l: 'List all cowfiles included in this package.',
-    think: 'Think the message instead of saying it aloud.',
-  })
-  .boolean(['b', 'd', 'g', 'p', 's', 't', 'w', 'y', 'n', 'h', 'r', 'l'])
-  .help()
-  .alias('h', 'help');
+const fs = require("fs")
+const { initFileSystem, saveData, saveTime, getLog, getChangedFiles, averageApplies, averageInits, averagePlans } = require("./methods")
+const { DataPacket } = require("./data-packet");
+const { DisplayManager } = require("./display-manager");
+const { StateManager } = require("./state-manager");
+const outputFilePath = initFileSystem()
+class TerraformOutputHandler{
 
-const argv = yargs.argv;
+    stateManager = null
+    startTS
+    planSaved
+    contextInit
+    contextPlan
+    applyStarted = false
 
-if (argv.l) {
-  listCows();
-} else if (argv._.length) {
-  say();
-} else {
-  require('get-stdin')().then((data) => {
-    if (data) {
-      argv._ = [require('strip-final-newline')(data)];
-      say();
-    } else {
-      yargs.showHelp();
+    init(){
+        process.stdin.setEncoding('utf8');
+        this.stateManager = new StateManager()
+        this.displayManager = new DisplayManager(outputFilePath)
+        this.displayManager.init()
+        this.startTS = Date.now()
     }
-  });
+    listen(){
+        const self = this
+        process.stdin.on('data', function (chunk) {
+            if (self.planSaved && !self.applyStarted ) {
+                self.startTS = Date.now()
+                self.applyStarted = true
+            }
+            saveData(chunk, outputFilePath)
+            const dataPacket = new DataPacket(chunk)
+            self.stateManager.updateState(dataPacket)
+            const context = self.displayManager.append(dataPacket)
+            if (self.displayManager.context == "init") this.contextInit = true
+            if (self.displayManager.context == "plan") this.contextPlan = true
+            const displayState = self.stateManager.getDisplayState()
+            if (displayState == 'flush-apply'){
+                saveTime((Date.now() - self.startTS)/1000, outputFilePath, "plan")
+                self.planSaved = true
+            }
+            const completionEstimate = context == "plan" && averagePlans ||
+                context == "apply" && averageApplies ||
+                context == "init" && averageInits
+            self.displayManager.render(displayState, getLog(), getChangedFiles(), completionEstimate)
+          
+          });
+        process.stdin.on('end', function () {
+            self.displayManager.flush()
+            saveTime((Date.now() - self.startTS)/1000, outputFilePath,
+                self.planSaved && "apply" ||
+                self.contextInit && "init" ||
+                self.contextPlan && "plan" || "other")
+        });
+        
+        process.stdin.on('error', console.error);
+    }
+    constructor(){
+        
+    }
 }
 
-function say() {
-  const module = require('./index');
-  const think = /think$/.test(argv['$0']) || argv.think;
-
-  console.log(think ? module.think(argv) : module.say(argv));
-}
-
-function listCows() {
-  require('./index').list((err, list) => {
-    if (err) throw new Error(err);
-    console.log(list.join('  '));
-  });
-}
+const handler = new TerraformOutputHandler()
+handler.init()
+handler.listen()
