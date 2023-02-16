@@ -1,15 +1,17 @@
-const { red, green, lastCommitsTxt, changedFilesTxt } = require('./methods')
 const ProgressBar = require('progress');
 const readline = require("readline")
+const { red, green, lastCommitsTxt, changedFilesTxt } = require('./methods')
 
 class TFProgressBar{
+    // A wrapper around terminal progress bar
     bar
-    messages = []
     status
+    messages = []
+    completionTime
     barCreationTimestamp
     barCompletionTimestamp
-    completionTime
     currentBarCompletionPercentage = 0
+
     init(completionEstimate){
       this.bar = new ProgressBar(`  :status [:bar] :percent :etas \n\r \n\r  :info`, {
             complete: green,
@@ -19,33 +21,39 @@ class TFProgressBar{
             clear: true
           });
       this.barCreationTimestamp = Date.now()
-      this.barCompletionTimestamp = this.barCreationTimestamp + (completionEstimate * 1.3 || this.completionTime) * 1000
+      const estimatedDuration = (completionEstimate * 1.3 || this.completionTime) * 1000
+      this.barCompletionTimestamp = this.barCreationTimestamp + estimatedDuration
     }
     get completionPercentage(){
+        // Calculate progress bar completion percentage
         const now = Date.now()
-        return Math.min(
-            100 * (now - this.barCreationTimestamp) / (this.barCompletionTimestamp - this.barCreationTimestamp),
-            90)
+        const currentProgress = (now - this.barCreationTimestamp)
+        const estimatedDuration = (this.barCompletionTimestamp - this.barCreationTimestamp)
+        return Math.min(100 *  currentProgress / estimatedDuration, 90)
     }
     tick(status, messages, gitLog, changedFiles, completionEstimate){        
         if (!status) status = this.status
         if (status && status.indexOf("null") == -1) this.status = status
+
+        // Get misc. info for terminal
         const numChangedFiles = changedFiles && changedFiles.split(/\r\n|\r|\n/).length
-        
         const gitLogInfo = (process.stdout.rows > 18) ? `\n\r \n\r  ${lastCommitsTxt}:\n ` + gitLog : ""
         const changedFilesInfo = (process.stdout.rows > 20 + numChangedFiles) ? `\n\r \n\r  ${changedFilesTxt}:\n ` + changedFiles : ""
         const info = messages.join("\n\r  ") + gitLogInfo + changedFilesInfo
-        const tickPercentage = this.completionPercentage - this.currentBarCompletionPercentage
-        if (this.context){
-            if (!this.bar) this.init(completionEstimate) // Can't init without time estimation ( derived = require(context )
+
+        if (this.context){ // Only start progress bar after getting context ( plan/apply etc)
+            const tickPercentage = this.completionPercentage - this.currentBarCompletionPercentage
+            if (!this.bar) this.init(completionEstimate)
             this.bar.tick(tickPercentage, { status: this.status, info, percent: this.completionPercentage })
         } 
         this.currentBarCompletionPercentage = this.completionPercentage
+
+        // Get blinking cursor off the terminal
         readline.cursorTo(process.stdout, 1000, 1000);
 
     }
     terminate() {
-        this.bar.terminate()
+        this.bar && this.bar.terminate()
     }
     setContext(context){
         this.context = context

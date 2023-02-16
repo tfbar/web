@@ -1,38 +1,40 @@
-const { doYouWantPrompt, getOutputRef, yellowStart, colorEnd } = require('./methods')
+const { stripFinalNewline, getOutputRef, showTitle } = require('./methods')
 const { TFProgressBar } = require('./progress-bar')
 const readline = require("readline")
 
 class DisplayManager{
-    output = null
-    progressBar = null
-    promptAdded = false
-    currentDataPacket = null
-    count = {}
     context
+    count = {}
+    output = null
+    oldCountLength
     outputFilePath
     lastDisplayState
-    oldCountLength
+    progressBar = null
+    userPrompt = false
+    currentDataPacket = null
 
     resetOutput() {
         this.output = ""
     }
-    flush() {
+    flush(init = true) {
         console.log("\n\t" + this.output)
         this.progressBar.terminate()
-        this.progressBar.init()
+        init && this.progressBar.init()
         this.resetOutput()
     }
     init(clear = false) {
         this.prepareConsole(clear)
         this.progressBar = new TFProgressBar()
     }
-    append(dataPacket) {
+    append(dataPacket) { // Add incoming data to memory
         this.currentDataPacket = dataPacket
         this.output += dataPacket.toString()        
         this.status = dataPacket.status || this.status
         const state = this.currentDataPacket.state
         if (state) this.count[state.trim()] = (this.count[state.trim()] || 0) + 1
-        if (this.currentDataPacket.context && this.context != this.currentDataPacket.context) {
+        // Handle context change
+        const contextHasChanged = this.currentDataPacket.context && this.context != this.currentDataPacket.context
+        if (contextHasChanged) {
             this.context = this.currentDataPacket.context
             this.prepareConsole()
             console.clear()
@@ -44,24 +46,28 @@ class DisplayManager{
         readline.cursorTo(process.stdout, 0, 0);
         if (!this.context || this.context.length < 2) return
         this.progressBar.setContext(this.context)
-        console.log("  " + yellowStart + "Terraform " + this.context.charAt(0).toUpperCase() + this.context.slice(1)  + "\n\r"+ colorEnd)
+        showTitle(this.context)
         if (!clear) return
     }
     tickProgressBar (gitLog, changedFiles, completionEstimate) {
         let messages = []
-        Object.keys(this.count).forEach(stateName => messages.push(`${stateName}: ${this.count[stateName]} resources`))
+        Object.keys(this.count).forEach(
+            stateName => messages.push(`${stateName}: ${this.count[stateName]} resources`)
+        )
+        // Prepare terminal dynamic info
         messages = messages.concat(getOutputRef(this.outputFilePath))
         const state = this.currentDataPacket.state + "..."
         const countLength = Object.keys(this.count).length
         const shouldClear = countLength > this.oldCountLength
         this.prepareConsole(shouldClear)
         this.oldCountLength = countLength
+        // Render progress bar and metadata
         this.progressBar.tick(state, messages, gitLog, changedFiles, completionEstimate)
     }
     render (displayState, gitLog, changedFiles, completionEstimate) {
-        if (displayState === 'flush-apply' && !this.promptAdded) {
-            this.output = this.output + doYouWantPrompt;
-            this.promptAdded = true
+        if (displayState === 'flush-apply' && !this.userPrompt) {
+            this.output = stripFinalNewline(stripFinalNewline(this.output))
+            this.userPrompt = true
             this.count = {}
         }
         if (displayState === 'progress-bar') {

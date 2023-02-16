@@ -1,3 +1,0 @@
-8fa0e09 #!/usr/bin/env node
-cfe2bf5 fix json
-ba5073d fix json

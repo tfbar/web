@@ -4,10 +4,7 @@ module.exports.tfPlanReadingText = "Reading..."
 module.exports.tfPlanReadingCompleteText = "Read complete after"
 module.exports.tfPlanRefreshingText = "Refreshing state..."
 module.exports.tfPlanUniqueText = module.exports.tfPlanReadingText
-module.exports.tfApplyUniqueText1 = "to add,"
-module.exports.tfApplyUniqueText2 = "to change,"
-module.exports.tfApplyUniqueText3 = "to destroy."
-module.exports.doYouWantPrompt = "Do you want to perform these actions? "
+module.exports.tfApplyUniqueText = "Do you want to perform these actions"
 module.exports.stateIndicator = "..."
 module.exports.completionIndicator = "complete after"
 
@@ -18,9 +15,7 @@ module.exports.isTfPlan = packet => {
     return packet.indexOf(module.exports.tfPlanUniqueText) > -1
 }
 module.exports.isTfApply = packet => {
-    return packet.indexOf(module.exports.tfApplyUniqueText1) > -1 &&
-        packet.indexOf(module.exports.tfApplyUniqueText2) > -1 &&
-        packet.indexOf(module.exports.tfApplyUniqueText3) > -1
+    return packet.indexOf(module.exports.tfApplyUniqueText) > -1
 }
 module.exports.isReadingStatus = packet => packet.indexOf(module.exports.tfPlanReadingText) > -1 || packet.indexOf(module.exports.tfPlanReadingCompleteText) > -1
 
