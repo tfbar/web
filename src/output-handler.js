@@ -57,7 +57,7 @@ class TerraformOutputHandler{
                 context == "init" && self.averageDurations.inits
             
             // Render data in terminal
-            self.displayManager.render(
+            if (dataPacket.state) self.displayManager.render(
                 displayState,
                 readGitLog(),
                 readChangedFiles(),
