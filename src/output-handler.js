@@ -2,7 +2,7 @@
 const { DataPacket } = require("./data-packet");
 const { DisplayManager } = require("./display-manager");
 const { StateManager } = require("./state-manager");
-const { saveTime, getLog, getChangedFiles, saveToOutputFile} = require("./methods")
+const { saveTime, readChangedFiles, readGitLog, getChangedFiles, saveToOutputFile} = require("./methods")
 
 class TerraformOutputHandler{
     startTS
@@ -59,8 +59,8 @@ class TerraformOutputHandler{
             // Render data in terminal
             self.displayManager.render(
                 displayState,
-                getLog(),
-                getChangedFiles(),
+                readGitLog(),
+                readChangedFiles(),
                 completionEstimate
             )
           });

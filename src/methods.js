@@ -1,48 +1,44 @@
 const fs = require("fs")
 const path = require("path")
-const { exec } = require("child_process");
+const { execSync } = require("child_process");
 const findRemoveSync = require('find-remove');
-const tfhFolder = path.resolve(process.cwd(), ".terraform/tfh")
-
-let gitLog = null
-let changedFiles = null
-
-// Getters
-module.exports.getLog = () => gitLog
-module.exports.getChangedFiles = () => changedFiles
-
-// Provide commit logs
-exec("git log --oneline -n 3 > " + tfhFolder + "/gitlog.txt", (error, stdout, stderr) => {
-    if (error) {
-        console.log(`error: ${error.message}`);
-        return;
-    }
-    if (stderr) {
-        console.log(`stderr: ${stderr}`);
-        return;
-    }
-    module.exports.readGitLog()
-});
-
-// Provide change log
-exec("git --no-pager diff --name-only HEAD~0 > " + tfhFolder + "/changed-files.txt", (error, stdout, stderr) => {
-    if (error) {
-        console.log(`error: ${error.message}`);
-        return;
-    }
-    if (stderr) {
-        console.log(`stderr: ${stderr}`);
-        return;
-    }
-    module.exports.readChangedFiles()
-});
+const npmCacheDirectory = execSync('npm config get cache').toString().trimEnd();
+const npxCacheDirectory = path.join(npmCacheDirectory, '_npx');
+const currentWorkingFolderName = path.basename(process.cwd())
+const tfhFolder = path.resolve(npxCacheDirectory, "terraform-interactive-logs", currentWorkingFolderName)
 
 module.exports.initFileSystem = () => {
+    if (!fs.existsSync(tfhFolder)){
+        fs.mkdirSync(tfhFolder, { recursive: true });
+    }
+    // Provide commit logs
+    execSync("git log --oneline -n 3 > " + tfhFolder + "/gitlog.txt", (error, stdout, stderr) => {
+        if (error) {
+            console.log(`error: ${error.message}`);
+            return;
+        }
+        if (stderr) {
+            console.log(`stderr: ${stderr}`);
+            return;
+        }
+    });
+    
+    // Provide change log
+    execSync("git --no-pager diff --name-only HEAD~0 > " + tfhFolder + "/changed-files.txt", (error, stdout, stderr) => {
+        if (error) {
+            console.log(`error: ${error.message}`);
+            return;
+        }
+        if (stderr) {
+            console.log(`stderr: ${stderr}`);
+            return;
+        }
+        module.exports.readChangedFiles()
+    });
+    
     // Remove old file and prepare log files
-    const folder = path.resolve(process.cwd(), ".terraform/tfh")
-    const tfFolder = path.resolve(process.cwd(), ".terraform")
+    const folder = tfhFolder
 
-    if (!fs.existsSync(tfFolder)) console.log("* Please run terraform init") || process.exit()
     if (!fs.existsSync(folder)) fs.mkdirSync(folder)
 
     const outputFileName = new Date().toISOString() + ".txt"
@@ -66,22 +62,12 @@ module.exports.saveTime = (seconds, outputFilePath, context) => fs.appendFile(`$
     });
 
 module.exports.readGitLog = () => {
-    fs.readFile(tfhFolder + "/gitlog.txt", 'utf8', (err, data) => {
-        if (err) {
-          console.error(err);
-          return;
-        }
-        gitLog = " " + data.replaceAll("\n", "\n  ");
-      });
+    const data = fs.readFileSync(tfhFolder + "/gitlog.txt", 'utf8', err => console.log(err))
+    return data.replaceAll("\n", "\n  ");
 }
 module.exports.readChangedFiles = () => {
-    fs.readFile(tfhFolder + "/changed-files.txt", 'utf8', (err, data) => {
-        if (err) {
-          console.error(err);
-          return;
-        }
-        changedFiles = " " + data.replaceAll("\n", "\n  ");
-      });
+    const data = fs.readFileSync(tfhFolder + "/changed-files.txt", 'utf8')
+    return " " + data.replaceAll("\n", "\n  ");
 }
 
 module.exports.calculateAverageDureation = () => {
@@ -97,7 +83,7 @@ module.exports.calculateAverageDureation = () => {
       const isInit = name.indexOf(".init") > -1
       if (!(isPlan || isApply || isInit)) return
 
-      const fullPath = path.join(process.cwd(), ".terraform/tfh/", name);
+      const fullPath = path.join(tfhFolder, name);
       const file = fs.readFileSync(fullPath, "utf-8");
       if (isPlan && /\d/ . test(file)) plans.push(parseFloat(file))
       if (isApply && /\d/ . test(file)) applies.push(parseFloat(file))

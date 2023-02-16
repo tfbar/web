@@ -65,6 +65,7 @@ class DisplayManager{
         this.progressBar.tick(state, messages, gitLog, changedFiles, completionEstimate)
     }
     render (displayState, gitLog, changedFiles, completionEstimate) {
+
         if (displayState === 'flush-apply' && !this.userPrompt) {
             this.output = stripFinalNewline(stripFinalNewline(this.output))
             this.userPrompt = true
