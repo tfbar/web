@@ -98,6 +98,7 @@ module.exports.calculateAverageDuration = () => {
 
 module.exports.fetchFeed = async () => {
     const Headers = (await import('node-fetch')).Headers
+    const fetch = require('node-fetch')
     const RequestHeaders = new Headers({
         "Accept": "application/json",
         "Content-Type": "application/json"
