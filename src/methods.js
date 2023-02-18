@@ -41,8 +41,8 @@ module.exports.initFileSystem = () => {
 
     if (!fs.existsSync(folder)) fs.mkdirSync(folder)
 
-    const outputFileName = new Date().toISOString() + ".txt"
-    const outputFilePath = `${folder}/${outputFileName}`
+    const outputFileName = new Date().toISOString().replaceAll(":","-") + ".txt"
+    const outputFilePath = path.join(folder, outputFileName)
     // Remove old files
     findRemoveSync(folder,  {age: { seconds: 180 * 60 }, extensions: ".txt"});
     findRemoveSync(folder,  {age: { seconds: 60 * 24 * 30 * 60 }, extensions: ".plan"});
@@ -51,12 +51,12 @@ module.exports.initFileSystem = () => {
     return outputFilePath
 }
 
-module.exports.saveToOutputFile = (chunk, outputFilePath) => fs.appendFile(outputFilePath, chunk + "\n", 'utf8',
+module.exports.saveToOutputFile = (chunk, outputFilePath) => fs.writeFileSync(outputFilePath, chunk + "\n", 'utf8',
     function(err) {     
         if (err) throw err;
     });
 
-module.exports.saveTime = (seconds, outputFilePath, context) => fs.appendFile(`${outputFilePath}.${context}`, `${seconds}`, 'utf8',
+module.exports.saveTime = (seconds, outputFilePath, context) => fs.writeFileSync(`${outputFilePath}.${context}`, `${seconds}`, 'utf8',
     function(err) {     
         if (err) throw err;
     });
