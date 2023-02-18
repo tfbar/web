@@ -46,8 +46,10 @@ class TFProgressBar{
         if (this.context){ // Only start progress bar after getting context ( plan/apply etc)
             const tickPercentage = this.completionPercentage - this.currentBarCompletionPercentage
             if (!this.bar) this.init(completionEstimate)
-            const padding = new Array(Math.round((14 - this.status.length)/2)).join(' ')
-            const status =  padding + this.status + padding
+
+            const padding = new Array(Math.round((14 - this.status.length))).join(" ")
+            
+            const status = this.status + padding
             this.bar.tick(tickPercentage, { status, info, percent: this.completionPercentage })
         } 
         this.currentBarCompletionPercentage = this.completionPercentage

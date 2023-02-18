@@ -77,6 +77,8 @@ class TerraformOutputHandler{
     }
 
     constructor(outputFilePath, averageDurations){
+        console.clear()
+        console.log(" Launching, please wait...")
         this.outputFilePath = outputFilePath
         this.averageDurations = averageDurations
     }
