@@ -6,7 +6,7 @@ Add a progress bar to terraform commands.
 
 
 ## Zero-step setup
-Pipe the output:
+Pipe the output like this:
 ```
 $ terraform plan | npx github:oferca/tf
 ```
@@ -29,6 +29,20 @@ or
 ```
 $ tfi apply
 ```
+## Pluginable Feeds
+The progress bar comes with a Chuck Norris jokes feed out of the box. However custom feeds can be configured:
+```
+$ tfi(){ terraform "$@" | npx github:oferca/tf [Title] [Feed Url] }
+```
+Example: configure Bob quotes feed:
+```
+$ tfi(){ terraform "$@" | npx github:oferca/tf "Bob Quotes" "https://api.chucknorris.io/jokes/random?name=Bob" }
+```
+Disable completely
+```
+$ tfi(){ terraform "$@" | npx github:oferca/tf disableFeed }
+```
+
 ## Contributing
 
 Pull requests are welcome. Feel free to...
