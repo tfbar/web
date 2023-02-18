@@ -21,10 +21,8 @@ class TerraformOutputHandler{
         this.displayManager.init()
         this.startTS = Date.now()
     }
-    listen(){
-        const self = this
+    listen(self, feed){
         process.stdin.on('data', function (chunk) {
-
             // User has entered input in tf apply frompt 
             const userEnteredYesNo = self.planSaved && !self.applyStarted
             if ( userEnteredYesNo ) {
@@ -61,7 +59,8 @@ class TerraformOutputHandler{
                 displayState,
                 readGitLog(),
                 readChangedFiles(),
-                completionEstimate
+                completionEstimate,
+                feed
             )
           });
         process.stdin.on('end', function () {

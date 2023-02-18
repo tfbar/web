@@ -49,7 +49,7 @@ class DisplayManager{
         showTitle(this.context)
         if (!clear) return
     }
-    tickProgressBar (gitLog, changedFiles, completionEstimate) {
+    tickProgressBar (gitLog, changedFiles, completionEstimate, feed) {
         let messages = []
         Object.keys(this.count).forEach(
             stateName => messages.push(`${stateName}: ${this.count[stateName]} resources`)
@@ -62,9 +62,9 @@ class DisplayManager{
         this.prepareConsole(shouldClear)
         this.oldCountLength = countLength
         // Render progress bar and metadata
-        this.progressBar.tick(state, messages, gitLog, changedFiles, completionEstimate)
+        this.progressBar.tick(state, messages, gitLog, changedFiles, completionEstimate, feed)
     }
-    render (displayState, gitLog, changedFiles, completionEstimate) {
+    render (displayState, gitLog, changedFiles, completionEstimate, feed) {
 
         if (displayState === 'flush-apply' && !this.userPrompt) {
             this.output = stripFinalNewline(stripFinalNewline(this.output))
@@ -73,9 +73,8 @@ class DisplayManager{
         }
         if (displayState === 'progress-bar') {
             if (this.lastDisplayState == "flush-apply") this.init(true)
-            this.tickProgressBar(gitLog, changedFiles, completionEstimate)
+            this.tickProgressBar(gitLog, changedFiles, completionEstimate, feed)
         }
-        
         if (displayState.indexOf('flush') > -1) this.flush()
         this.lastDisplayState = displayState
     }

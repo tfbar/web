@@ -70,7 +70,7 @@ module.exports.readChangedFiles = () => {
     return " " + data.replaceAll("\n", "\n  ");
 }
 
-module.exports.calculateAverageDureation = () => {
+module.exports.calculateAverageDuration = () => {
     const plans = []
     const applies = []
     const inits = []
@@ -93,5 +93,22 @@ module.exports.calculateAverageDureation = () => {
         plans: plans.reduce((a, b) => a + b, 0) / plans.length,
         applies: applies.reduce((a, b) => a + b, 0) / applies.length,
         inits: inits.reduce((a, b) => a + b, 0) / inits.length
+    }
+}
+
+module.exports.fetchFeed = async () => {
+    const Headers = (await import('node-fetch')).Headers
+    const RequestHeaders = new Headers({
+        "Accept": "application/json",
+        "Content-Type": "application/json"
+    })
+    const paramFeedTitle = process.argv[2] || "Chuck Norris Quotes"
+    const paramFeedUrl = process.argv[3] || "https://api.chucknorris.io/jokes/random"
+    if (paramFeedTitle === "disableFeed") return null
+    const res = await fetch(paramFeedUrl)
+    const response = await res.json()
+    return {
+        title: paramFeedTitle,
+        text: response.value
     }
 }

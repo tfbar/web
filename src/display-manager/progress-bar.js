@@ -1,6 +1,6 @@
 const ProgressBar = require('progress');
 const readline = require("readline")
-const { red, green, lastCommitsTxt, changedFilesTxt, gitStatisticsTxt } = require('./methods')
+const { red, green, magentaStart, colorEnd, lastCommitsTxt, changedFilesTxt, gitStatisticsTxt } = require('./methods')
 
 class TFProgressBar{
     // A wrapper around terminal progress bar
@@ -31,7 +31,7 @@ class TFProgressBar{
         const estimatedDuration = (this.barCompletionTimestamp - this.barCreationTimestamp)
         return Math.min(100 *  currentProgress / estimatedDuration, 90)
     }
-    tick(status, messages, gitLog, changedFiles, completionEstimate){        
+    tick(status, messages, gitLog, changedFiles, completionEstimate, feed){        
         if (!status) status = this.status
         if (status && status.indexOf("null") == -1) this.status = status
 
@@ -40,7 +40,8 @@ class TFProgressBar{
         const gitLogInfo = (process.stdout.rows > 18) ? `\n\r \n\r  ${gitStatisticsTxt}:\n\r  ${lastCommitsTxt}:\n  ` + gitLog : ""
         const changedTitle = changedFiles.length <3 ? "" : `\n\r \n\r  ${changedFilesTxt}:\n `
         const changedFilesInfo = (process.stdout.rows > 20 + numChangedFiles) ? changedTitle + changedFiles : ""
-        const info = messages.join("\n\r  ") + gitLogInfo + changedFilesInfo
+        const feedInfo = feed ? ((process.stdout.rows > 25 + numChangedFiles) ? "\n\r  " + magentaStart + feed.title + ":" + "\n\r  " + magentaStart + feed.text + colorEnd: "") : ""
+        const info = messages.join("\n\r  ") + gitLogInfo + changedFilesInfo + feedInfo
 
         if (this.context){ // Only start progress bar after getting context ( plan/apply etc)
             const tickPercentage = this.completionPercentage - this.currentBarCompletionPercentage
