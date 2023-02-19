@@ -2,17 +2,39 @@ const fs = require("fs")
 const path = require("path")
 const { execSync } = require("child_process");
 const findRemoveSync = require('find-remove');
-const npmCacheDirectory = execSync('npm config get cache').toString().trimEnd();
-const npxCacheDirectory = path.join(npmCacheDirectory, '_npx');
-const currentWorkingFolderName = path.basename(process.cwd())
-const tfhFolder = path.resolve(npxCacheDirectory, "terraform-interactive-logs", currentWorkingFolderName)
+const fetch = require('node-fetch')
+
+let tfhFolder
+const gitLogFileName = "gitlog.txt"
+const changedFileName = "changed-files.txt"
+const argFeedTitle = process.argv[2]
+const argFeedUrl = process.argv[3]
+const feedTitle =  "Chuck Norris Quotes"
+const feedUrl =  "https://api.chucknorris.io/jokes/random"
+
+
+const indentNewline = str => str.replaceAll("\n", "\n  ");
 
 module.exports.initFileSystem = () => {
+    
+    process.stdin.setEncoding('utf8');
+
+    // Create cache folder
+    const currentWorkingFolderName = path.basename(process.cwd())
+    const npmCacheDirectory = execSync('npm config get cache').toString().trimEnd();
+    const npxCacheDirectory = path.join(npmCacheDirectory, '_npx');
+
+    tfhFolder = path.resolve(
+        npxCacheDirectory,
+        "terraform-interactive-logs",
+        currentWorkingFolderName
+    )
     if (!fs.existsSync(tfhFolder)){
         fs.mkdirSync(tfhFolder, { recursive: true });
     }
-    // Provide commit logs
-    execSync("git log --oneline -n 3 > " + tfhFolder + "/gitlog.txt", (error, stdout, stderr) => {
+
+    // Create commit logs provider
+    execSync("git log --oneline -n 3 > " + tfhFolder + "/" + gitLogFileName, (error, stdout, stderr) => {
         if (error) {
             console.log(`error: ${error.message}`);
             return;
@@ -23,8 +45,8 @@ module.exports.initFileSystem = () => {
         }
     });
     
-    // Provide change log
-    execSync("git --no-pager diff --name-only HEAD~0 > " + tfhFolder + "/changed-files.txt", (error, stdout, stderr) => {
+    // Create change logs provider
+    execSync("git --no-pager diff --name-only HEAD~0 > " + tfhFolder + "/" + changedFileName, (error, stdout, stderr) => {
         if (error) {
             console.log(`error: ${error.message}`);
             return;
@@ -36,18 +58,17 @@ module.exports.initFileSystem = () => {
         module.exports.readChangedFiles()
     });
     
-    // Remove old file and prepare log files
-    const folder = tfhFolder
-
-    if (!fs.existsSync(folder)) fs.mkdirSync(folder)
-
-    const outputFileName = new Date().toISOString().replaceAll(":","-") + ".txt"
-    const outputFilePath = path.join(folder, outputFileName)
     // Remove old files
-    findRemoveSync(folder,  {age: { seconds: 180 * 60 }, extensions: ".txt"});
-    findRemoveSync(folder,  {age: { seconds: 60 * 24 * 30 * 60 }, extensions: ".plan"});
-    findRemoveSync(folder,  {age: { seconds: 60 * 24 * 30 * 60 }, extensions: ".apply"});
+    const secondsInDay = 86400
+    const secondsInMonth = 2592000
+    findRemoveSync(tfhFolder,  {age: { seconds: secondsInDay }, extensions: ".txt"});
+    findRemoveSync(tfhFolder,  {age: { seconds: secondsInMonth }, extensions: ".plan"});
+    findRemoveSync(tfhFolder,  {age: { seconds: secondsInMonth }, extensions: ".apply"});
     
+    // Create output path + name
+    const outputFileName = new Date().toISOString().replaceAll(":","-") + ".txt"
+    const outputFilePath = path.join(tfhFolder, outputFileName)
+
     return outputFilePath
 }
 
@@ -62,12 +83,12 @@ module.exports.saveTime = (seconds, outputFilePath, context) => fs.writeFileSync
     });
 
 module.exports.readGitLog = () => {
-    const data = fs.readFileSync(tfhFolder + "/gitlog.txt", 'utf8', err => console.log(err))
-    return data.replaceAll("\n", "\n  ");
+    const data = fs.readFileSync(tfhFolder + "/" + gitLogFileName, 'utf8', err => console.log(err))
+    return indentNewline(data)
 }
 module.exports.readChangedFiles = () => {
-    const data = fs.readFileSync(tfhFolder + "/changed-files.txt", 'utf8')
-    return " " + data.replaceAll("\n", "\n  ");
+    const data = fs.readFileSync(tfhFolder + "/" + changedFileName, 'utf8')
+    return " " + indentNewline(data)
 }
 
 module.exports.calculateAverageDuration = () => {
@@ -81,12 +102,15 @@ module.exports.calculateAverageDuration = () => {
       const isPlan = name.indexOf(".plan") > -1
       const isApply = name.indexOf(".apply") > -1
       const isInit = name.indexOf(".init") > -1
+
       if (!(isPlan || isApply || isInit)) return
 
       const fullPath = path.join(tfhFolder, name);
       const file = fs.readFileSync(fullPath, "utf-8");
-      if (isPlan && /\d/ . test(file)) plans.push(parseFloat(file))
-      if (isApply && /\d/ . test(file)) applies.push(parseFloat(file))
+      const decimalOnly = /\d/ . test(file)
+
+      if (isPlan && decimalOnly) plans.push(parseFloat(file))
+      if (isApply && decimalOnly) applies.push(parseFloat(file))
     });
 
     return {
@@ -98,14 +122,10 @@ module.exports.calculateAverageDuration = () => {
 
 module.exports.fetchFeed = async () => {
     const Headers = (await import('node-fetch')).Headers
-    const fetch = require('node-fetch')
-    const RequestHeaders = new Headers({
-        "Accept": "application/json",
-        "Content-Type": "application/json"
-    })
-    const paramFeedTitle = process.argv[2] || "Chuck Norris Quotes"
-    const paramFeedUrl = process.argv[3] || "https://api.chucknorris.io/jokes/random"
+    const paramFeedTitle = argFeedTitle || feedTitle
+    const paramFeedUrl = argFeedUrl || feedUrl
     if (paramFeedTitle === "disableFeed") return null
+
     const res = await fetch(paramFeedUrl)
     const response = await res.json()
     return {

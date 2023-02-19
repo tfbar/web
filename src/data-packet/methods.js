@@ -1,4 +1,7 @@
 
+const hasReading = packet => packet.indexOf(module.exports.tfPlanReadingText) > -1
+const hasReadingComplete = packet => packet.indexOf(module.exports.tfPlanReadingCompleteText) > -1
+
 module.exports.tfInitUniqueText = "Initializing modules..."
 module.exports.tfPlanReadingText = "Reading..."
 module.exports.tfPlanReadingCompleteText = "Read complete after"
@@ -17,7 +20,8 @@ module.exports.isTfPlan = packet => {
 module.exports.isTfApply = packet => {
     return packet.indexOf(module.exports.tfApplyUniqueText) > -1
 }
-module.exports.isReadingStatus = packet => packet.indexOf(module.exports.tfPlanReadingText) > -1 || packet.indexOf(module.exports.tfPlanReadingCompleteText) > -1
+
+module.exports.isReadingStatus = packet => hasReading(packet) || hasReadingComplete(packet)
 
 const hasActiveState = chunk => chunk.indexOf(module.exports.stateIndicator) > -1 && chunk.indexOf("moments...") === -1
 
@@ -27,11 +31,14 @@ const hasState = chunk => hasActiveState(chunk) || hasCompleteState(chunk)
 
 module.exports.getState = chunk => {
     if (!hasState(chunk)) return null
-    const indicator = hasCompleteState(chunk) ? module.exports.completionIndicator : module.exports.stateIndicator
-    const fullChunk = chunk.split(indicator)[0]
-    const wordsArr = fullChunk.split(" ")
-    const lastWord = wordsArr[wordsArr.length - 1]
-    const wordBeforeLast = wordsArr[wordsArr.length - 2]
-    const state = lastWord === "state" ? wordBeforeLast : lastWord
+
+    // Determine current state - reading, refreshing etc...
+    const indicator = hasCompleteState(chunk) ? module.exports.completionIndicator : module.exports.stateIndicator,
+        fullChunk = chunk.split(indicator)[0],
+        wordsArr = fullChunk.split(" "),
+        lastWord = wordsArr[wordsArr.length - 1],
+        wordBeforeLast = wordsArr[wordsArr.length - 2],
+        state = lastWord === "state" ? wordBeforeLast : lastWord
+
     return state
 }

@@ -1,3 +1,9 @@
+module.exports.newLine = "\n\r"
+
+module.exports.newSection = "\n\r \n\r  "
+
+module.exports.lineCount = str => str.split(/\r\n|\r|\n/).length
+
 module.exports.green = '\u001b[42m \u001b[0m';
 
 module.exports.red = '\u001b[41m \u001b[0m';
@@ -19,6 +25,8 @@ module.exports.gitStatisticsTxt = module.exports.magentaStart + "Git Statistics"
 module.exports.changedFilesTxt = module.exports.blueStart + "Files changed since last commit" + module.exports.colorEnd
 
 module.exports.showTitle = context => console.log("  " + module.exports.yellowStart + "Terraform " + context.charAt(0).toUpperCase() + context.slice(1)  + "\n\r"+ module.exports.colorEnd)
+
+module.exports.getStatusPadding = status => new Array(Math.round((14 - status.length))).join(" ")
 
 module.exports.stripFinalNewline = input => {
 	const LF = typeof input === 'string' ? '\n' : '\n'.charCodeAt();

@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-const fs = require("fs")
+
 const { TerraformOutputHandler } = require("./output-handler.js");
 const { initFileSystem, calculateAverageDuration, fetchFeed } = require("./methods")
 
@@ -10,4 +10,6 @@ const handler = new TerraformOutputHandler(
     averageDurations
 )
 handler.init()
-fetchFeed().then(feed => handler.listen(handler, feed))
+fetchFeed().then(
+    feed => handler.listen(handler, feed)
+)

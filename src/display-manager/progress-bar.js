@@ -1,6 +1,13 @@
 const ProgressBar = require('progress');
 const readline = require("readline")
-const { red, green, magentaStart, colorEnd, lastCommitsTxt, changedFilesTxt, gitStatisticsTxt } = require('./methods')
+const { red, green, magentaStart, colorEnd,
+    newLine,
+    lineCount,
+    newSection,
+    lastCommitsTxt,
+    changedFilesTxt, 
+    gitStatisticsTxt
+} = require('./methods')
 
 class TFProgressBar{
     // A wrapper around terminal progress bar
@@ -13,44 +20,58 @@ class TFProgressBar{
     currentBarCompletionPercentage = 0
 
     init(completionEstimate){
-      this.bar = new ProgressBar(`  :status [:bar] :percent :etas \n\r \n\r  :info`, {
+      const estimatedDuration = (completionEstimate * 1.3 || this.completionTime) * 1000
+      
+      this.bar = new ProgressBar(`  :status [:bar] :percent :etas ${newSection}:info`, {
             complete: green,
             incomplete: red,
             width: 20,
             total: 100,
             clear: true
           });
+
       this.barCreationTimestamp = Date.now()
-      const estimatedDuration = (completionEstimate * 1.3 || this.completionTime) * 1000
       this.barCompletionTimestamp = this.barCreationTimestamp + estimatedDuration
     }
+
     get completionPercentage(){
-        // Calculate progress bar completion percentage
         const now = Date.now()
         const currentProgress = (now - this.barCreationTimestamp)
         const estimatedDuration = (this.barCompletionTimestamp - this.barCreationTimestamp)
         return Math.min(100 *  currentProgress / estimatedDuration, 90)
     }
+
     tick(status, messages, gitLog, changedFiles, completionEstimate, feed){        
         if (!status) status = this.status
         if (status && status.indexOf("null") == -1) this.status = status
 
-        // Get misc. info for terminal
-        const numChangedFiles = changedFiles && changedFiles.split(/\r\n|\r|\n/).length
-        const gitLogInfo = (process.stdout.rows > 18) ? `\n\r \n\r  ${gitStatisticsTxt}:\n\r  ${lastCommitsTxt}:\n  ` + gitLog : ""
-        const changedTitle = changedFiles.length <3 ? "" : `\n\r \n\r  ${changedFilesTxt}:\n `
-        const changedFilesInfo = (process.stdout.rows > 20 + numChangedFiles) ? changedTitle + changedFiles : ""
-        const feedInfo = feed ? ((process.stdout.rows > 25 + numChangedFiles) ? "\n\r  " + magentaStart + feed.title + ":" + "\n\r  " + magentaStart + feed.text + colorEnd: "") : ""
-        const info = messages.join("\n\r  ") + gitLogInfo + changedFilesInfo + feedInfo
+        // Create misc. info for terminal
+        const numChangedFiles = changedFiles && lineCount(changedFiles),
+            shouldAddCommits = process.stdout.rows > 18,
+            shouldAddChangedFiles = process.stdout.rows > 20 + numChangedFiles,
+            shouldAddFeed = process.stdout.rows > 25 + numChangedFiles,
+            gitLogTxt = `${newSection}${gitStatisticsTxt}:${newLine}  ${lastCommitsTxt}:\n  ` + gitLog,
+            gitLogInfo = shouldAddCommits ? gitLogTxt : "",
+            changedTitle = changedFiles.length < 3 ? "" : `${newSection} ${changedFilesTxt}:\n `,
+            changedFilesInfo = shouldAddChangedFiles ? changedTitle + changedFiles : ""
+
+            const feedTxt = feed ? `${newLine}  ` + magentaStart + feed.title + ":" +
+                `${newLine}  ` +magentaStart + feed.text + colorEnd : ""
+
+            const feedInfo = shouldAddFeed ? feedTxt : ""
+            const info = messages.join(`${newLine}  `) + gitLogInfo + changedFilesInfo + feedInfo
 
         if (this.context){ // Only start progress bar after getting context ( plan/apply etc)
+
             const tickPercentage = this.completionPercentage - this.currentBarCompletionPercentage
             if (!this.bar) this.init(completionEstimate)
+            const status = this.status + getStatusPadding(this.status)
 
-            const padding = new Array(Math.round((14 - this.status.length))).join(" ")
-            
-            const status = this.status + padding
-            this.bar.tick(tickPercentage, { status, info, percent: this.completionPercentage })
+            this.bar.tick(tickPercentage,{
+                    status,
+                    info,
+                    percent: this.completionPercentage
+                })
         } 
         this.currentBarCompletionPercentage = this.completionPercentage
 
@@ -58,12 +79,15 @@ class TFProgressBar{
         readline.cursorTo(process.stdout, 1000, 1000);
 
     }
+
     terminate() {
         this.bar && this.bar.terminate()
     }
+
     setContext(context){
         this.context = context
     }
+    
     constructor(completionTime = 3, context){
         this.context = context
         this.completionTime = completionTime

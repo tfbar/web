@@ -2,7 +2,7 @@
 const { DataPacket } = require("./data-packet");
 const { DisplayManager } = require("./display-manager");
 const { StateManager } = require("./state-manager");
-const { saveTime, readChangedFiles, readGitLog, getChangedFiles, saveToOutputFile} = require("./methods")
+const { saveTime, readChangedFiles, readGitLog, saveToOutputFile} = require("./methods")
 
 class TerraformOutputHandler{
     startTS
@@ -15,14 +15,15 @@ class TerraformOutputHandler{
     averageDurations
 
     init(){
-        process.stdin.setEncoding('utf8');
         this.stateManager = new StateManager()
         this.displayManager = new DisplayManager(this.outputFilePath)
         this.displayManager.init()
         this.startTS = Date.now()
     }
+
     listen(self, feed){
         process.stdin.on('data', function (chunk) {
+
             // User has entered input in tf apply frompt 
             const userEnteredYesNo = self.planSaved && !self.applyStarted
             if ( userEnteredYesNo ) {
@@ -45,7 +46,8 @@ class TerraformOutputHandler{
             // In case system has prompted the user for apply yes/no
             const displayState = self.stateManager.getDisplayState()
             if (displayState == 'flush-apply'){
-                saveTime((Date.now() - self.startTS)/1000, outputFilePath, "plan")
+                const timeUntilNow = ( Date.now() - self.startTS ) / 1000
+                saveTime(timeUntilNow, outputFilePath, "plan")
                 self.planSaved = true
             }
 
@@ -63,6 +65,7 @@ class TerraformOutputHandler{
                 feed
             )
           });
+          
         process.stdin.on('end', function () {
             // Flush all data
             self.displayManager.flush(false)
