@@ -6,6 +6,7 @@ const { red, green, magentaStart, colorEnd,
     newSection,
     lastCommitsTxt,
     changedFilesTxt, 
+    getStatusPadding,
     gitStatisticsTxt
 } = require('./methods')
 
@@ -87,7 +88,7 @@ class TFProgressBar{
     setContext(context){
         this.context = context
     }
-    
+
     constructor(completionTime = 3, context){
         this.context = context
         this.completionTime = completionTime
