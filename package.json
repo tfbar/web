@@ -1,7 +1,7 @@
 {
-  "name": "tfi",
+  "name": "tfh",
   "version": "1.0.3",
-  "description": "tf easy log",
+  "description": "Interractive Progress Bar for terraform commands",
   "homepage": "https://github.com/oferca/tf",
   "author": {
     "name": "Ofer Kafry",
