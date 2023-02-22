@@ -8,7 +8,7 @@
     "email": "ofer.c@hotmail.com",
     "url": "https://github.com/oferca/tf"
   },
-  "license": "MIT",
+  "license": "CC BY-NC-ND",
   "main": "./index",
   "bin": {
     "log": "./src/index.js"
