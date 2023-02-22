@@ -11,7 +11,7 @@ Add an interactive progress bar to terraform commands.
 
 
 ## Installation options
-### Zero-setup intallation
+### Zero-setup
 Pipe the output of any terraform command to *npx github:oferca/tf*, for example:
 
 ####  Windows cmd / linux / mac 
