@@ -17,14 +17,14 @@ Watch progress and receieve insights and statistics.
 
 
 ## Setup options
-### Option 1: Zero Setup
-Watch it in action by adding "*npx github:oferca/tf*" to any command.
+### Option 1: Zero Setup - "Test Drive"
+Test by adding "*| npx tfh*" to any command.
 
 For example:
 
 ####  In windows cmd / linux / mac 
 ```
-$ terraform plan | npx github:oferca/tf
+$ terraform plan | npx tfh
 ```
 
 ### Option 2: Permenant Installation
