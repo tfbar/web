@@ -17,7 +17,7 @@ Watch progress and receieve insights and statistics.
 
 
 ## Setup options
-### Option 1: Zero Setup - Test Drive
+### Option 1: Zero setup - Test Drive
 Test by adding **| npx tfh** to any command.
 
 For example:
