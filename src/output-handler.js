@@ -81,7 +81,7 @@ class TerraformOutputHandler{
 
     constructor(outputFilePath, averageDurations){
         console.clear()
-        console.log(" Launching, please wait...")
+        console.log("Acquiring state lock. This may take a few moments...")
         this.outputFilePath = outputFilePath
         this.averageDurations = averageDurations
     }
