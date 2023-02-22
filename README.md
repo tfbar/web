@@ -18,7 +18,7 @@ Watch progress and receieve insights and statistics.
 
 ## Setup options
 ### Option 1: Zero setup - Test Drive
-Test by adding **"| npx tfh"** to any command.
+Test by adding **"| npx tfh"** to any terraform command.
 
 For example:
 
