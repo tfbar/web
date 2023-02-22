@@ -1,5 +1,11 @@
-# Progress Bar for Terraform
-Add an interactive progress bar to terraform commands.
+# Terraform Progress Bar
+**A progress bar to terraform commands.**
+
+Utilize your time better waiting for those endless terraform outputs.
+
+Watch progress and receieve insights and statistics.
+
+*Full log is available any time at the click of a button*
 
   
 <br/>
@@ -7,38 +13,42 @@ Add an interactive progress bar to terraform commands.
 ![](https://github.com/oferca/tf/blob/main/demo.gif)
 
 ## Prerequisite
-* [Node.js](https://nodejs.org/)
+* Install [Node.js](https://nodejs.org/)
 
 
-## Installation options
-### Zero-setup
-Pipe the output of any terraform command to *npx github:oferca/tf*, for example:
+## Setup options
+### Option 1: Zero Setup
+Watch it in action by adding "*npx github:oferca/tf*" to any command.
 
-####  Windows cmd / linux / mac 
+For example:
+
+####  In windows cmd / linux / mac 
 ```
 $ terraform plan | npx github:oferca/tf
 ```
 
-### Permenant Installation
-#### Linux / mac 
+### Option 2: Permenant Installation
+#### In linux / mac 
 Add the following line to your favorite shell config file: .zshrc, .bashrc, .bash_profile.
 ```
-$ tfi(){ terraform "$@" | npx github:oferca/tf  }
+$ iterraform(){ terraform "$@" | npx github:oferca/tf  }
 ```
-Then use like this
+Then use it:
 ```
-$ tfi plan
+$ iterraform plan
 ```
 
-#### Windows cmd 
-* Create a batch file named *tfi.bat* and paste the following into it
+#### In windows cmd 
+* Create a batch file named *iterraform.bat* and paste the following into it
 ```
 @ECHO OFF 
-terraform %* -lock=false  | npx github:oferca/tf
+terraform %* | npx github:oferca/tf
 ```
-* Add *tfi.bat* to [system path](https://www.mathworks.com/matlabcentral/answers/94933-how-do-i-edit-my-system-path-in-windows) and run like:
+* Add *iterraform.bat* to [system path](https://www.mathworks.com/matlabcentral/answers/94933-how-do-i-edit-my-system-path-in-windows)
+
+Then use it like:
 ```
-$ tfi.bat apply
+$ iterraform.bat apply
 ```
 ## Pluginable Feeds
 The progress bar comes with a Chuck Norris jokes feed out of the box.
@@ -47,15 +57,15 @@ However you can also configure custom feeds. You need an api that returns a json
 Then configure it like this:
 
 ```
-$ tfi(){ terraform "$@" | npx github:oferca/tf [Title] [Feed Url] }
+$ iterraform(){ terraform "$@" | npx github:oferca/tf [Title] [Feed Url] }
 ```
 For example: configure Bob quotes feed:
 ```
-$ tfi(){ terraform "$@" | npx github:oferca/tf "Bob Quotes" "https://api.chucknorris.io/jokes/random?name=Bob" }
+$ iterraform(){ terraform "$@" | npx github:oferca/tf "Bob Quotes" "https://api.chucknorris.io/jokes/random?name=Bob" }
 ```
 Disable feed completely:
 ```
-$ tfi(){ terraform "$@" | npx github:oferca/tf disableFeed }
+$ iterraform(){ terraform "$@" | npx github:oferca/tf disableFeed }
 ```
 
 ## Contributing
