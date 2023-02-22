@@ -5,7 +5,7 @@ Utilize your time better waiting for those endless terraform outputs.
 
 Watch progress and receieve insights and statistics.
 
-*Full log is available any time at the click of a button*
+*Complete log is available any time at the click of a button*
 
   
 <br/>
