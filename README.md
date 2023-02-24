@@ -55,7 +55,8 @@ The progress bar comes with a Chuck Norris jokes feed out of the box.
 
 However you can also configure custom feeds. You need an api that returns a json response with a "value" field, like [this api](https://api.chucknorris.io/).
 Then configure it like this:
-
+#### In linux / mac 
+Add the following line to your favorite shell config file: .zshrc, .bashrc, .bash_profile.
 ```
 $ iterraform(){ terraform "$@" | npx github:oferca/tf [Title] [Feed Url] }
 ```
