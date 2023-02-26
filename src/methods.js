@@ -19,7 +19,7 @@ const appRoot = path.resolve(__dirname);
 let tfhFolder
 
 const indentNewline = str => str.replaceAll("\n", "\n  ");
-module.exports.startupMsg = "Acquiring state lock. This may take a few moments..."
+module.exports.startupMsg = " Acquiring state lock. This may take a few moments..."
 
 module.exports.initFileSystem = () => {
     
@@ -78,7 +78,13 @@ module.exports.initFileSystem = () => {
     return outputFilePath
 }
 
-module.exports.saveToOutputFile = (chunk, outputFilePath) => fs.appendFileSync(outputFilePath, chunk + "\n", 'utf8',
+module.exports.saveToOutputFile = (chunk, outputFilePath) => chunk && fs.appendFileSync(
+    outputFilePath,
+    chunk.
+        replaceAll("[0m","").
+        replaceAll("[4m","").
+        replaceAll("[1m","").
+        replaceAll("[33m","") + "\n", 'utf8',
     function(err) {     
         if (err) throw err;
     });

@@ -61,7 +61,7 @@ class TerraformOutputHandler{
                 if (endOfInput) {
                     this.context = "end"
                     saveToOutputFile(chunk + this.output, this.outputFilePath)
-                    return this.displayManager.flush(false, false)
+                    this.displayManager.flush(false, false)
                 }
             }
             
