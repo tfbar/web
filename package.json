@@ -1,6 +1,6 @@
 {
   "name": "tfh",
-  "version": "1.0.4",
+  "version": "1.0.44",
   "description": "Interractive Progress Bar for terraform commands",
   "homepage": "https://github.com/oferca/tf",
   "author": {
@@ -8,6 +8,12 @@
     "email": "ofer.c@hotmail.com",
     "url": "https://github.com/oferca/tf"
   },
+  "keywords": [
+    "terraform",
+    "progress bar",
+    "logs",
+    "output"
+  ],
   "license": "CC BY-NC-ND",
   "main": "./index",
   "bin": {
@@ -26,16 +32,20 @@
     "url": "https://github.com/oferca/tf.git"
   },
   "scripts": {
-    "test-init": "./tests/test-init.sh",
-    "test-apply": "./tests/test-apply.sh"
+    "serve": "firebase emulators:start --only functions",
+    "shell": "firebase functions:shell",
+    "start": "npm run shell",
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log"
   },
   "dependencies": {
     "find-remove": "^4.1.0",
+    "firebase": "^9.17.1",
     "https": "^1.0.0",
     "node-fetch": "^2.6.1",
     "progress": "^2.0.3"
   },
   "engines": {
-    "node": ">= 4"
+    "node": ">=16"
   }
 }

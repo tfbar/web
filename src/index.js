@@ -1,15 +1,26 @@
 #!/usr/bin/env node
 
 const { TerraformOutputHandler } = require("./output-handler.js");
-const { initFileSystem, calculateAverageDuration, fetchFeed } = require("./methods")
+
+const {
+    initFileSystem,
+    calculateAverageDuration,
+    initFireBase,
+    fetchFeed
+} = require("./methods")
 
 const outputFilePath = initFileSystem()
+const db = initFireBase()
 const averageDurations = calculateAverageDuration()
+
 const handler = new TerraformOutputHandler(
     outputFilePath,
-    averageDurations
+    averageDurations,
+    db
 )
-handler.init()
-fetchFeed().then(
-    feed => handler.listen(handler, feed)
+
+handler.init().
+    then(fetchFeed).
+    then(
+    async feed => await handler.listen.apply(handler, feed)
 )

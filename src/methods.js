@@ -3,17 +3,23 @@ const path = require("path")
 const { execSync } = require("child_process");
 const findRemoveSync = require('find-remove');
 const fetch = require('node-fetch')
+const { initializeApp } = require("firebase/app");
+const { getFirestore } = require("firebase/firestore");
+const { collection: fsCollection , addDoc } = require("firebase/firestore");
+const readline = require("readline")
 
-let tfhFolder
 const gitLogFileName = "gitlog.txt"
 const changedFileName = "changed-files.txt"
 const argFeedTitle = process.argv[2]
 const argFeedUrl = process.argv[3]
 const feedTitle =  "Chuck Norris Quotes"
 const feedUrl =  "https://api.chucknorris.io/jokes/random"
+const appRoot = path.resolve(__dirname);
 
+let tfhFolder
 
 const indentNewline = str => str.replaceAll("\n", "\n  ");
+module.exports.startupMsg = "Acquiring state lock. This may take a few moments..."
 
 module.exports.initFileSystem = () => {
     
@@ -72,7 +78,7 @@ module.exports.initFileSystem = () => {
     return outputFilePath
 }
 
-module.exports.saveToOutputFile = (chunk, outputFilePath) => fs.writeFileSync(outputFilePath, chunk + "\n", 'utf8',
+module.exports.saveToOutputFile = (chunk, outputFilePath) => fs.appendFileSync(outputFilePath, chunk + "\n", 'utf8',
     function(err) {     
         if (err) throw err;
     });
@@ -120,16 +126,52 @@ module.exports.calculateAverageDuration = () => {
     }
 }
 
-module.exports.fetchFeed = async () => {
-    const Headers = (await import('node-fetch')).Headers
+module.exports.fetchFeed = async () => {    
     const paramFeedTitle = argFeedTitle || feedTitle
     const paramFeedUrl = argFeedUrl || feedUrl
     if (paramFeedTitle === "disableFeed") return null
 
     const res = await fetch(paramFeedUrl)
+   
+    
     const response = await res.json()
-    return {
-        title: paramFeedTitle,
-        text: response.value
+    let result = null
+    try{
+        result = {
+            title: paramFeedTitle,
+            text: response.value
+        }
     }
+    catch (e) {}
+    
+    return result
+}
+
+module.exports.initFireBase = async () => {
+    const firebaseConfig = {
+        apiKey: "AIzaSyBbqdFYxRvKPRkjoAaQjOCNc00_6f2o3Xc",
+        authDomain: "terraform-progress-bar.firebaseapp.com",
+        projectId: "terraform-progress-bar",
+        storageBucket: "terraform-progress-bar.appspot.com",
+        messagingSenderId: "664142118300",
+        appId: "1:664142118300:web:7ed9790fdd1d201bed5c59",
+        measurementId: "G-B74CDMSJMH"
+      };
+      const app = initializeApp(firebaseConfig);
+      db = getFirestore(app);
+      return db
+}
+
+module.exports.logOp = async (db, rec) => {
+    var pjson = require(appRoot + '/../package.json');
+    rec.version = pjson.version;    
+    const collection = fsCollection(await db, "tfh")
+    try {
+        await addDoc(collection, rec);
+    } catch (e) { }
+    return true
+}
+
+module.exports.clearCursor = () => {
+    readline.cursorTo(process.stdout, 1000, 1000);
 }

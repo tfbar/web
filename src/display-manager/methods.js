@@ -1,3 +1,5 @@
+const readline = require("readline")
+
 module.exports.newLine = "\n\r"
 
 module.exports.newSection = "\n\r \n\r  "
@@ -41,4 +43,8 @@ module.exports.stripFinalNewline = input => {
 	}
 
 	return input;
+}
+
+module.exports.clearCursor = () => {
+    readline.cursorTo(process.stdout, 1000, 1000);
 }

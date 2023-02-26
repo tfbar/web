@@ -7,7 +7,8 @@ const { red, green, magentaStart, colorEnd,
     lastCommitsTxt,
     changedFilesTxt, 
     getStatusPadding,
-    gitStatisticsTxt
+    gitStatisticsTxt,
+    clearCursor
 } = require('./methods')
 
 class TFProgressBar{
@@ -76,9 +77,7 @@ class TFProgressBar{
         } 
         this.currentBarCompletionPercentage = this.completionPercentage
 
-        // Get blinking cursor off the terminal
-        readline.cursorTo(process.stdout, 1000, 1000);
-
+        clearCursor()
     }
 
     terminate() {

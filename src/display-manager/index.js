@@ -16,12 +16,12 @@ class DisplayManager{
     resetOutput() {
         this.output = ""
     }
-    flush(init = true) {
+    flush(init = true, reset = true) {
         // Output everything
         console.log("\n\t" + this.output)
         this.progressBar.terminate()
         init && this.progressBar.init()
-        this.resetOutput()
+        reset && this.resetOutput()
     }
     init(clear = false) {
         this.prepareConsole(clear)

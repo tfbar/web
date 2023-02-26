@@ -1,11 +1,12 @@
-
 const { DataPacket } = require("./data-packet");
 const { DisplayManager } = require("./display-manager");
 const { StateManager } = require("./state-manager");
-const { saveTime, readChangedFiles, readGitLog, saveToOutputFile} = require("./methods")
-
+const { saveTime, readChangedFiles, readGitLog, saveToOutputFile, startupMsg, logOp, clearCursor } = require("./methods")
 class TerraformOutputHandler{
+    db
     startTS
+    context
+    uniqueId
     planSaved
     contextInit
     contextPlan
@@ -14,76 +15,114 @@ class TerraformOutputHandler{
     outputFilePath
     averageDurations
 
-    init(){
+    async init(){
         this.stateManager = new StateManager()
         this.displayManager = new DisplayManager(this.outputFilePath)
         this.displayManager.init()
         this.startTS = Date.now()
+        
+        await logOp(this.db, {
+            uId: this.uniqueId,
+            ts: this.startTS,
+            op: "init"
+        })
     }
 
-    listen(self, feed){
-        process.stdin.on('data', function (chunk) {
+    listen(feed){
 
+        const handleIncoming = async (chunk, endOfInput = false) => {
+            if (this.context == "end") {
+                saveToOutputFile(chunk, this.outputFilePath)
+                return this.displayManager.flush(false, false)
+            }
             // User has entered input in tf apply frompt 
-            const userEnteredYesNo = self.planSaved && !self.applyStarted
+            const userEnteredYesNo = this.planSaved && !this.applyStarted
             if ( userEnteredYesNo ) {
-                self.startTS = Date.now()
-                self.applyStarted = true    
+                this.startTS = Date.now()
+                this.applyStarted = true
             }
             
             // Save incoming data in file
-            saveToOutputFile(chunk, self.outputFilePath)
+            saveToOutputFile(chunk, this.outputFilePath)
             
             // Handle incomming data chunks
             const dataPacket = new DataPacket(chunk)
-            self.stateManager.updateState(dataPacket)
-            const context = self.displayManager.append(dataPacket)
+            this.stateManager.updateState(dataPacket)
+            const context = this.displayManager.append(dataPacket)
+           
+            if (context != this.context){
+                this.context = context
 
+                await logOp(this.db, {
+                    uId: this.uniqueId,
+                    ts: this.startTS,
+                    op: context
+                })
+                if (endOfInput) {
+                    this.context = "end"
+                    saveToOutputFile(chunk + this.output, this.outputFilePath)
+                    return this.displayManager.flush(false, false)
+                }
+            }
+            
             // Detect tf command
-            if (self.displayManager.context == "init") this.contextInit = true
-            if (self.displayManager.context == "plan") this.contextPlan = true
+            if (this.displayManager.context == "init") this.contextInit = true
+            if (this.displayManager.context == "plan") this.contextPlan = true
 
             // In case system has prompted the user for apply yes/no
-            const displayState = self.stateManager.getDisplayState()
+            const displayState = this.stateManager.getDisplayState()
             if (displayState == 'flush-apply'){
-                const timeUntilNow = ( Date.now() - self.startTS ) / 1000
+                const timeUntilNow = ( Date.now() - this.startTS ) / 1000
                 saveTime(timeUntilNow, outputFilePath, "plan")
-                self.planSaved = true
+                this.planSaved = true
             }
 
             // Estimate task completion time
-            const completionEstimate = context == "plan" && self.averageDurations.plans ||
-                context == "apply" && self.averageDurations.applies ||
-                context == "init" && self.averageDurations.inits
+            const completionEstimate = context == "plan" && this.averageDurations.plans ||
+                context == "apply" && this.averageDurations.applies ||
+                context == "init" && this.averageDurations.inits
             
             // Render data in terminal
-            if (dataPacket.state) self.displayManager.render(
+            if (dataPacket.state && !endOfInput) this.displayManager.render(
                 displayState,
                 readGitLog(),
                 readChangedFiles(),
                 completionEstimate,
                 feed
             )
-          });
+          }
+        process.stdin.on('data', handleIncoming);
           
-        process.stdin.on('end', function () {
-            // Flush all data
-            self.displayManager.flush(false)
-
+        process.stdin.on('end', async (chunk) => {
+          
+            handleIncoming(chunk, true)
+            
             // Save duration for future estimates
-            saveTime((Date.now() - self.startTS)/1000, this.outputFilePath,
-                self.planSaved && "apply" ||
-                self.contextInit && "init" ||
-                self.contextPlan && "plan" || "other")
+            saveTime((Date.now() - this.startTS)/1000, this.outputFilePath,
+                this.planSaved && "apply" ||
+                this.contextInit && "init" ||
+                this.contextPlan && "plan" || "other")
+            
+            await logOp(this.db, {
+                uId: this.uniqueId,
+                ts: Date.now(),
+                op: "end"
+            })
         });
+
         process.stdin.on('error', console.error);
     }
 
-    constructor(outputFilePath, averageDurations){
+    
+
+    constructor(outputFilePath, averageDurations, db){
         console.clear()
-        console.log("Acquiring state lock. This may take a few moments...")
+        console.log(startupMsg)
+        clearCursor()
+        this.db = db
         this.outputFilePath = outputFilePath
         this.averageDurations = averageDurations
+        this.uniqueId = new Date().valueOf();
     }
 }
 

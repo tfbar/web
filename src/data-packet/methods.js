@@ -1,31 +1,42 @@
 
-const hasReading = packet => packet.indexOf(module.exports.tfPlanReadingText) > -1
-const hasReadingComplete = packet => packet.indexOf(module.exports.tfPlanReadingCompleteText) > -1
+const hasReading = packet => packet && packet.indexOf(module.exports.tfPlanReadingText) > -1
+const hasReadingComplete = packet => packet && packet.indexOf(module.exports.tfPlanReadingCompleteText) > -1
 
 module.exports.tfInitUniqueText = "Initializing modules..."
 module.exports.tfPlanReadingText = "Reading..."
 module.exports.tfPlanReadingCompleteText = "Read complete after"
 module.exports.tfPlanRefreshingText = "Refreshing state..."
 module.exports.tfPlanUniqueText = module.exports.tfPlanReadingText
-module.exports.tfApplyUniqueText = "Do you want to perform these actions"
+module.exports.tfApplyUniqueText1 = "Do you want to perform these actions"
+module.exports.tfApplyUniqueText2 = "modifying..."
+module.exports.tfApplyUniqueText3 = "creating..."
+module.exports.tfErrorUniqueText = "Error: "
 module.exports.stateIndicator = "..."
 module.exports.completionIndicator = "complete after"
 
 module.exports.isTfInit = packet => {
-    return packet.indexOf(module.exports.tfInitUniqueText) > -1
+    return packet && packet.indexOf(module.exports.tfInitUniqueText) > -1
 }
 module.exports.isTfPlan = packet => {
-    return packet.indexOf(module.exports.tfPlanUniqueText) > -1
+    return packet && packet.indexOf(module.exports.tfPlanUniqueText) > -1
+}
+
+module.exports.isTfError = packet => {
+    return packet && packet.indexOf(module.exports.tfErrorUniqueText) > -1
 }
 module.exports.isTfApply = packet => {
-    return packet.indexOf(module.exports.tfApplyUniqueText) > -1
+    return packet && (
+        packet.indexOf(module.exports.tfApplyUniqueText1) > -1 ||
+        packet.indexOf(module.exports.tfApplyUniqueText2) > -1 ||
+        packet.indexOf(module.exports.tfApplyUniqueText3) > -1
+    )
 }
 
 module.exports.isReadingStatus = packet => hasReading(packet) || hasReadingComplete(packet)
 
-const hasActiveState = chunk => chunk.indexOf(module.exports.stateIndicator) > -1 && chunk.indexOf("moments...") === -1
+const hasActiveState = chunk => chunk && chunk.indexOf(module.exports.stateIndicator) > -1 && chunk.indexOf("moments...") === -1
 
-const hasCompleteState = chunk => chunk.indexOf(module.exports.completionIndicator) > -1
+const hasCompleteState = chunk => chunk && chunk.indexOf(module.exports.completionIndicator) > -1
 
 const hasState = chunk => hasActiveState(chunk) || hasCompleteState(chunk)
 
