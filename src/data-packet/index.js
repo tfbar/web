@@ -4,6 +4,7 @@ const {
     getState,
     isTfApply,
     isTfError,
+    isTfWarning,
     isReadingStatus,
     tfPlanRefreshingText
 } = require('./methods')
@@ -17,6 +18,7 @@ class DataPacket{
             isTfPlan(this.chunk) && "plan" ||
             isTfApply(this.chunk) && "apply"  ||
             isTfError(this.chunk) && "error"  ||
+            isTfWarning(this.chunk) && "warning"  ||
             null
         return currentContext
     } 

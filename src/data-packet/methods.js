@@ -11,6 +11,7 @@ module.exports.tfApplyUniqueText1 = "Do you want to perform these actions"
 module.exports.tfApplyUniqueText2 = "modifying..."
 module.exports.tfApplyUniqueText3 = "creating..."
 module.exports.tfErrorUniqueText = "Error: "
+module.exports.tfWarningUniqueText = "Error: "
 module.exports.stateIndicator = "..."
 module.exports.completionIndicator = "complete after"
 
@@ -23,6 +24,9 @@ module.exports.isTfPlan = packet => {
 
 module.exports.isTfError = packet => {
     return packet && packet.indexOf(module.exports.tfErrorUniqueText) > -1
+}
+module.exports.isTfWarning = packet => {
+    return packet && packet.indexOf(module.exports.tfWarningUniqueText) > -1
 }
 module.exports.isTfApply = packet => {
     return packet && (

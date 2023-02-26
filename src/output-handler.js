@@ -50,7 +50,7 @@ class TerraformOutputHandler{
             this.stateManager.updateState(dataPacket)
             const context = this.displayManager.append(dataPacket)
            
-            if (context != this.context){
+            if (context && (context != this.context)){
                 this.context = context
 
                 await logOp(this.db, {
@@ -70,7 +70,7 @@ class TerraformOutputHandler{
             if (this.displayManager.context == "plan") this.contextPlan = true
 
             // In case system has prompted the user for apply yes/no
-            const displayState = this.stateManager.getDisplayState()
+            let displayState = this.stateManager.getDisplayState()
             if (displayState == 'flush-apply'){
                 const timeUntilNow = ( Date.now() - this.startTS ) / 1000
                 saveTime(timeUntilNow, outputFilePath, "plan")
@@ -82,6 +82,7 @@ class TerraformOutputHandler{
                 context == "apply" && this.averageDurations.applies ||
                 context == "init" && this.averageDurations.inits
             
+            if (endOfInput || displayState=="warning" ) { displayState = "flush" }
             // Render data in terminal
             if (dataPacket.state && !endOfInput) this.displayManager.render(
                 displayState,

@@ -52,7 +52,7 @@ class TFProgressBar{
             shouldAddCommits = process.stdout.rows > 18,
             shouldAddChangedFiles = process.stdout.rows > 20 + numChangedFiles,
             shouldAddFeed = process.stdout.rows > 25 + numChangedFiles,
-            gitLogTxt = `${newSection}${gitStatisticsTxt}:${newLine}  ${lastCommitsTxt}:\n  ` + gitLog,
+            gitLogTxt = `${newSection}${newLine}  ${gitStatisticsTxt}:${newLine}${newLine}  ${lastCommitsTxt}:\n  ` + gitLog,
             gitLogInfo = shouldAddCommits ? gitLogTxt : "",
             changedTitle = changedFiles.length < 3 ? "" : `${newSection} ${changedFilesTxt}:\n `,
             changedFilesInfo = shouldAddChangedFiles ? changedTitle + changedFiles : ""

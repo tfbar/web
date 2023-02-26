@@ -14,9 +14,9 @@ class DisplayManager{
     currentDataPacket = null
 
     resetOutput() {
-        this.output = ""
+       this.output = ""
     }
-    flush(init = true, reset = true) {
+    flush(init = true, reset = false) {
         // Output everything
         console.log("\n\t" + this.output)
         this.progressBar.terminate()
