@@ -91,6 +91,9 @@ class TerminalManager{
         this.barCreationTimestamp = Date.now()
         this.currentBarCompletionPercentage = 0
         this.dynamicResources = []
+        for(let i=0; i++; i<dynamicLines){
+            dynamicResources.push("")
+        };
         this._progressBar = null
     }
 }
