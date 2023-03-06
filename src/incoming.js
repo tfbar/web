@@ -46,6 +46,7 @@ class IncomingHandler{
         if (tfCommandDetected){
             this.displayManager.setCommand(packet.command)
             this.command = packet.command
+            console.clear()
         }
 
         const commandEnded = packet.endProcess && this.command
