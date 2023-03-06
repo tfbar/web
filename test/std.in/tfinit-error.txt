@@ -1,0 +1,41 @@
+Initializing modules...
+- irsa-allianz in ../../../../modules/iam/irsa/allianz
+- irsa-allianz.irsa in ../../../../modules/iam/service-accounts
+- irsa-allianz.irsa.irsa in 
+Downloading registry.terraform.io/reegnz/oidc-provider-data/aws 0.0.4 for irsa-allianz.oidc-provider-data...
+- irsa-allianz.oidc-provider-data in .terraform/modules/irsa-allianz.oidc-provider-data
+╷
+│ Error: Unreadable module directory
+│ 
+│ Unable to evaluate directory symlink: lstat ../../../../modules/iam/imported-iam-role-for-serviceaccount: no such file or directory
+╵
+
+╷
+│ Error: Failed to read module directory
+│ 
+│ Module directory  does not exist or cannot be read.
+╵
+
+╷
+│ Error: Unreadable module directory
+│ 
+│ Unable to evaluate directory symlink: lstat ../../../../modules/iam/imported-iam-role-for-serviceaccount: no such file or directory
+╵
+
+╷
+│ Error: Failed to read module directory
+│ 
+│ Module directory  does not exist or cannot be read.
+╵
+
+╷
+│ Error: Unreadable module directory
+│ 
+│ Unable to evaluate directory symlink: lstat ../../../../modules/iam/imported-iam-role-for-serviceaccount: no such file or directory
+╵
+
+╷
+│ Error: Failed to read module directory
+│ 
+│ Module directory  does not exist or cannot be read.
+╵

@@ -1,109 +1,27 @@
 const fs = require("fs")
 const path = require("path")
-const { execSync } = require("child_process");
-const findRemoveSync = require('find-remove');
-const fetch = require('node-fetch')
+const readline = require("readline")
 const { initializeApp } = require("firebase/app");
 const { getFirestore } = require("firebase/firestore");
+const { readChangedFiles, readGitLog }  = require("./files")
 const { collection: fsCollection , addDoc } = require("firebase/firestore");
-const readline = require("readline")
 
-const gitLogFileName = "gitlog.txt"
-const changedFileName = "changed-files.txt"
-const argFeedTitle = process.argv[2]
-const argFeedUrl = process.argv[3]
-const feedTitle =  "Chuck Norris Quotes"
-const feedUrl =  "https://api.chucknorris.io/jokes/random"
 const appRoot = path.resolve(__dirname);
+const lineCount = str => str.split(/\r\n|\r|\n/).length
+const minLinesForCommitsInfo = 28;
+const minLinesForChangedFilesInfo = 31
+const newSection = "\n\r \n\r"
+const newLine = "\n\r"
+const magentaStart = '\u001b[1;35m' 
+const blueStart = '\u001b[1;34m' 
+const colorEnd = '\u001b[0m';
+const lastCommitsTxt = blueStart + "Last commits to branch" + colorEnd
+const gitStatisticsTxt = magentaStart + "Git Statistics" + colorEnd
+const changedFilesTxt = blueStart + "Files changed since last commit" + colorEnd
+const fullOutputText = outputFile => `\u001b${newLine}${newLine}${blueStart}Output file:\n\r${colorEnd}* ${outputFile} `
+const fullOutputWeb = `\u001b${blueStart}Cmd + Click to open in browser:\n\r${colorEnd}* http://localhost:3500 `
 
-let tfhFolder
-
-const indentNewline = str => str.replaceAll("\n", "\n  ");
-module.exports.startupMsg = " Acquiring state lock. This may take a few moments..."
-
-module.exports.initFileSystem = () => {
-    
-    process.stdin.setEncoding('utf8');
-
-    // Create cache folder
-    const currentWorkingFolderName = path.basename(process.cwd())
-    const npmCacheDirectory = execSync('npm config get cache').toString().trimEnd();
-    const npxCacheDirectory = path.join(npmCacheDirectory, '_npx');
-
-    tfhFolder = path.resolve(
-        npxCacheDirectory,
-        "terraform-interactive-logs",
-        currentWorkingFolderName
-    )
-    if (!fs.existsSync(tfhFolder)){
-        fs.mkdirSync(tfhFolder, { recursive: true });
-    }
-
-    // Create commit logs provider
-    execSync("git log --oneline -n 3 > " + tfhFolder + "/" + gitLogFileName, (error, stdout, stderr) => {
-        if (error) {
-            console.log(`error: ${error.message}`);
-            return;
-        }
-        if (stderr) {
-            console.log(`stderr: ${stderr}`);
-            return;
-        }
-    });
-    
-    // Create change logs provider
-    execSync("git --no-pager diff --name-only HEAD~0 > " + tfhFolder + "/" + changedFileName, (error, stdout, stderr) => {
-        if (error) {
-            console.log(`error: ${error.message}`);
-            return;
-        }
-        if (stderr) {
-            console.log(`stderr: ${stderr}`);
-            return;
-        }
-        module.exports.readChangedFiles()
-    });
-    
-    // Remove old files
-    const secondsInDay = 86400
-    const secondsInMonth = 2592000
-    findRemoveSync(tfhFolder,  {age: { seconds: secondsInDay }, extensions: ".txt"});
-    findRemoveSync(tfhFolder,  {age: { seconds: secondsInMonth }, extensions: ".plan"});
-    findRemoveSync(tfhFolder,  {age: { seconds: secondsInMonth }, extensions: ".apply"});
-    
-    // Create output path + name
-    const outputFileName = new Date().toISOString().replaceAll(":","-") + ".txt"
-    const outputFilePath = path.join(tfhFolder, outputFileName)
-
-    return outputFilePath
-}
-
-module.exports.saveToOutputFile = (chunk, outputFilePath) => chunk && fs.appendFileSync(
-    outputFilePath,
-    chunk.
-        replaceAll("[0m","").
-        replaceAll("[4m","").
-        replaceAll("[1m","").
-        replaceAll("[33m","") + "\n", 'utf8',
-    function(err) {     
-        if (err) throw err;
-    });
-
-module.exports.saveTime = (seconds, outputFilePath, context) => fs.writeFileSync(`${outputFilePath}.${context}`, `${seconds}`, 'utf8',
-    function(err) {     
-        if (err) throw err;
-    });
-
-module.exports.readGitLog = () => {
-    const data = fs.readFileSync(tfhFolder + "/" + gitLogFileName, 'utf8', err => console.log(err))
-    return indentNewline(data)
-}
-module.exports.readChangedFiles = () => {
-    const data = fs.readFileSync(tfhFolder + "/" + changedFileName, 'utf8')
-    return " " + indentNewline(data)
-}
-
-module.exports.calculateAverageDuration = () => {
+module.exports.calculateAverageDuration = (tfhFolder) => {
     const plans = []
     const applies = []
     const inits = []
@@ -130,27 +48,6 @@ module.exports.calculateAverageDuration = () => {
         applies: applies.reduce((a, b) => a + b, 0) / applies.length,
         inits: inits.reduce((a, b) => a + b, 0) / inits.length
     }
-}
-
-module.exports.fetchFeed = async () => {    
-    const paramFeedTitle = argFeedTitle || feedTitle
-    const paramFeedUrl = argFeedUrl || feedUrl
-    if (paramFeedTitle === "disableFeed") return null
-
-    const res = await fetch(paramFeedUrl)
-   
-    
-    const response = await res.json()
-    let result = null
-    try{
-        result = {
-            title: paramFeedTitle,
-            text: response.value
-        }
-    }
-    catch (e) {}
-    
-    return result
 }
 
 module.exports.initFireBase = async () => {
@@ -181,3 +78,28 @@ module.exports.logOp = async (db, rec) => {
 module.exports.clearCursor = () => {
     readline.cursorTo(process.stdout, 1000, 1000);
 }
+
+module.exports.getStateId = (tfPlanCompleted, context) => tfPlanCompleted && "apply" ||
+    context == "init" && "init" ||
+    context == "plan" && "plan" || "other"
+
+module.exports.getStaticText = (tfhFolder, outputFile) => {
+    const changedFiles = readChangedFiles(tfhFolder),
+        gitLog = readGitLog(tfhFolder) ,
+        numChangedFiles = changedFiles && lineCount(changedFiles),
+        shouldAddCommits = process.stdout.rows > minLinesForCommitsInfo,
+        shouldAddChangedFiles = process.stdout.rows > minLinesForChangedFilesInfo + numChangedFiles,
+        gitLogTxt = `${newSection}${gitStatisticsTxt}:${newLine}${newLine}${lastCommitsTxt}:\n` + gitLog,
+        gitLogInfo = shouldAddCommits ? gitLogTxt : "",
+        changedTitle = changedFiles.length < 3 ? "" : `${newSection}${changedFilesTxt}:\n`,
+        changedFilesInfo = shouldAddChangedFiles ? changedTitle + changedFiles : "",
+        info = fullOutputWeb + fullOutputText(outputFile) + gitLogInfo + changedFilesInfo
+    return info
+}
+
+module.exports.displayOutput = outputFile => console.log(fullOutputText(outputFile).
+    replaceAll("[0m","").
+    replaceAll("[4m","").
+    replaceAll("[1m","").
+    replaceAll("[90m","").
+    replaceAll("[33m",""))
