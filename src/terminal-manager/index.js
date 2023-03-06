@@ -34,11 +34,13 @@ class TerminalManager{
         const durationSec = pastDuration || defaultDuration
         this.duration = durationSec * 1000
         this.barCompletionTimestamp = this.barCreationTimestamp + this.duration
+        console.clear()
         this.render()
     }
     displayStartupMsg () {
         console.clear()
 	    console.log(startupMsg)
+        clearCursor()
     }
     initProgressBar () {
         return createProgressBar()

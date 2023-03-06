@@ -10,6 +10,7 @@ const {
     getStaticText
 } = require("./methods")
 
+console.clear()
 const db = initFireBase()
 const { outputFile, tfhFolder } = initFileSystem()
 const localWebServer = new LocalWebServer()
@@ -18,6 +19,7 @@ const displayManager = new TerminalManager(
     getStaticText(tfhFolder, outputFile),
     calculateAverageDuration(tfhFolder)
 )
+displayManager.displayStartupMsg()
 
 const incomingHandler = new IncomingHandler(
     outputFile,
