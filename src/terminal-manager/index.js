@@ -63,6 +63,7 @@ class TerminalManager{
     }
     get dynamicText(){
         const hasInput = this.dynamicResources.length > dynamicLines
+        if (this.dynamicResources.length == dynamicLines + 1) console.clear()
         const terminalBorder = hasInput ? border : ""
         const dynamic = this.dynamicResources.slice(-dynamicLines)
         const dText = dynamic.reduce(getDynamicLine, "")
@@ -94,7 +95,7 @@ class TerminalManager{
         this.currentBarCompletionPercentage = 0
         this.dynamicResources = []
         for(let i=0; i++; i<dynamicLines){
-            dynamicResources.push("")
+            dynamicResources.push(" ")
         };
         this._progressBar = null
     }
