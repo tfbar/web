@@ -18,7 +18,7 @@ const colorEnd = '\u001b[0m';
 const lastCommitsTxt = blueStart + "Last commits to branch" + colorEnd
 const gitStatisticsTxt = magentaStart + "Git Statistics" + colorEnd
 const changedFilesTxt = blueStart + "Files changed since last commit" + colorEnd
-const fullOutputText = outputFile => `\u001b${newLine}${newLine}${blueStart}Output file:\n\r${colorEnd}* ${outputFile} `
+const fullOutputText = outputFile => `\u001b${newLine}${newLine}${blueStart}Output file:\n\r${colorEnd}*  ${outputFile} `
 const fullOutputWeb = `\u001b${blueStart}Cmd + Click to open in browser:\n\r${colorEnd}* http://localhost:3500 `
 
 module.exports.calculateAverageDuration = (tfhFolder) => {
@@ -97,9 +97,4 @@ module.exports.getStaticText = (tfhFolder, outputFile) => {
     return info
 }
 
-module.exports.displayOutput = outputFile => console.log(fullOutputText(outputFile).
-    replaceAll("[0m","").
-    replaceAll("[4m","").
-    replaceAll("[1m","").
-    replaceAll("[90m","").
-    replaceAll("[33m",""))
+module.exports.displayOutput = outputFile => console.log(fullOutputText(outputFile))
