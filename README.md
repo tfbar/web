@@ -1,7 +1,8 @@
 # Terraform Progress Bar
-**Get a better experience of waiting for "terraform plan" to complete.**
+**A better experience waiting for "terraform plan" to complete.**
 
-Watch progress and receieve insights.
+* Watch progress and receieve insights.
+* Run in small terminals without losing information. 
 
 ### The progress bar: 
 
