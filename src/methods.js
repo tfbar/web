@@ -49,6 +49,31 @@ module.exports.calculateAverageDuration = (tfhFolder) => {
         inits: inits.reduce((a, b) => a + b, 0) / inits.length
     }
 }
+module.exports.mostRecentFile = (tfhFolder, plan) => {
+    const plans = []
+    const applies = []
+    const inits = []
+    const filenames = fs.readdirSync(tfhFolder + "/");
+
+    // Read average durations
+    filenames.forEach((name) => {
+      const isPlan = name.indexOf(".plan") > -1
+      const isApply = name.indexOf(".apply") > -1
+      const isInit = name.indexOf(".init") > -1
+
+      if (!(isPlan || isApply || isInit)) return
+
+
+      if (isPlan && decimalOnly) plans.push(parseFloat(file))
+      if (isApply && decimalOnly) applies.push(parseFloat(file))
+    });
+
+    return {
+        plans: plans.reduce((a, b) => a + b, 0) / plans.length,
+        applies: applies.reduce((a, b) => a + b, 0) / applies.length,
+        inits: inits.reduce((a, b) => a + b, 0) / inits.length
+    }
+}
 
 module.exports.initFireBase = async () => {
     const firebaseConfig = {

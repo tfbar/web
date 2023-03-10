@@ -5,6 +5,7 @@ const {
     isTfApply,
     isTfError,
     isTfWarning,
+    planSuccessul,
     isReadingStatus,
     getResourceStatus,
     releasingStateLock,
@@ -42,6 +43,12 @@ class Packet{
         if (this.chunk.indexOf(onlyYes) > -1) return "end-plan"
         return false    
     }
+    get planSuccessul (){
+        if (!this.chunk) return false
+        if (this.chunk.indexOf(planSuccessul) > -1) return "plan-successul"
+        return false    
+    }
+
     get resourceStatus (){
         return getResourceStatus(this.chunk)
     }

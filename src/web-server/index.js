@@ -9,6 +9,7 @@ class LocalWebServer{
     app
     port
     output
+    command
     browserTabOpen
 
     addChunk (chunk) {
@@ -18,6 +19,9 @@ class LocalWebServer{
     
     setBrowserTabClosed () {
         this.browserTabOpen = false
+    }
+    setCommand(command) {
+        this.command = command
     }
 
     get isBrowserTabOpen() {
@@ -37,7 +41,9 @@ class LocalWebServer{
             self.browserTabOpen = setTimeout(
                 self.setBrowserTabClosed, 1000)
           })
-          
+        this.app.get('/command', (req, res) => {
+            res.send(self.command || "")
+        })
         this.app.listen(this.port)
     }
 

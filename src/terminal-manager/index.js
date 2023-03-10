@@ -55,7 +55,7 @@ class TerminalManager{
     }
     terminate() {
         this.progressBar &&  this.progressBar.terminate()
-        //console.clear()
+        if (this.command) console.clear()
     }
     updateResourceStatus(name, status, id) {
         this.dynamicResources.push({ name, status, id })

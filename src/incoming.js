@@ -2,6 +2,10 @@ const { Packet } = require("./packet");
 const { logOp, displayOutput } = require("./methods")
 const { saveToOutputFile, saveTime } = require("./files")
 const newLine = "\n\r"
+const colorEnd = '\u001b[0m';
+const redStart = '\u001b[41m' 
+
+
 
 class IncomingHandler{
     db
@@ -45,11 +49,13 @@ class IncomingHandler{
         const tfCommandDetected = packet.command && !this.command
         if (tfCommandDetected){
             this.displayManager.setCommand(packet.command)
+            this.localWebServer.setCommand(packet.command)
             this.command = packet.command
             console.clear()
         }
 
         const commandEnded = packet.endProcess && this.command
+        this.planSuccessul = packet.planSuccessul
         if (commandEnded) this.handleEndSignal(packet.endProcess)
     }
 
@@ -74,7 +80,9 @@ class IncomingHandler{
         })
 
         this.displayManager.terminate()
+        const planUnsuccessfull = !this.planSuccessul && this.command == "plan"
         this.flush()
+        if (planUnsuccessfull) console.log(redStart + "* Errors found * " + colorEnd)
         if (signal != "end-plan") displayOutput(this.outputFile)
         process.exit()
     }
