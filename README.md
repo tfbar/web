@@ -1,24 +1,24 @@
 # Terraform Progress Bar
-**A progress bar to terraform commands.**
+**Get a better experience of waiting for "terraform plan" to complete.**
 
-Utilize your time better waiting for those endless terraform outputs.
+Watch progress and receieve insights.
 
-Watch progress and receieve insights and statistics.
-
-*Complete log is available any time at the click of a button*
-
-  
-<br/>
+### The progress bar: 
 
 ![](https://github.com/oferca/tf/blob/main/demo.gif)
+
+### Web insights and statistics:
+
+![Log and insights](https://github.com/oferca/tf/blob/main/demo.png)
+
 
 ## Prerequisite
 * Install [Node.js](https://nodejs.org/)
 
 
 ## Setup options
-### Option 1: Zero setup - Test Drive
-Test by adding **"| npx tfh"** to any terraform command.
+### Option 1: Zero setup
+Add *' | npx tfh'* to "terraform plan" (or other command).
 
 For example:
 
