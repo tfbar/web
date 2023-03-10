@@ -14,7 +14,7 @@ const newSection = newLine + newLine
 const getBorder = () => {
 	let border = ""
 	while(border.length < process.stdout.columns){
-		border += "="
+		border += "━"
 	}
 	return magentaStart + border + colorEnd
 }

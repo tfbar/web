@@ -82,7 +82,7 @@ class IncomingHandler{
         const planUnsuccessfull = !this.planSuccessul && this.command == "plan"
         this.displayManager.terminate(!planUnsuccessfull)
         if (!planUnsuccessfull) this.flush()
-        if (planUnsuccessfull) console.log(redStart + "│ Errors found. For complete log open the below output file." + colorEnd)
+        if (planUnsuccessfull) console.log(redStart + "│ Errors found. For complete log open the output file below." + colorEnd)
         if (signal != "end-plan") displayOutput(this.outputFile)
         process.exit()
     }
