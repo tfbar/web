@@ -53,9 +53,9 @@ class TerminalManager{
     get completionPercentage () {
         return getCompletionPercentage(this.barCreationTimestamp, this.barCompletionTimestamp) 
     }
-    terminate() {
+    terminate(clear = true) {
         this.progressBar &&  this.progressBar.terminate()
-        if (this.command) console.clear()
+        if (this.command && clear) console.clear()
     }
     updateResourceStatus(name, status, id) {
         this.dynamicResources.push({ name, status, id })

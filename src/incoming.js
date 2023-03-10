@@ -3,7 +3,7 @@ const { logOp, displayOutput } = require("./methods")
 const { saveToOutputFile, saveTime } = require("./files")
 const newLine = "\n\r"
 const colorEnd = '\u001b[0m';
-const redStart = '\u001b[41m' 
+const redStart = '\u001b[1;31m' 
 
 
 
@@ -79,10 +79,10 @@ class IncomingHandler{
             command: this.command
         })
 
-        this.displayManager.terminate()
         const planUnsuccessfull = !this.planSuccessul && this.command == "plan"
-        this.flush()
-        if (planUnsuccessfull) console.log(redStart + "* Errors found * " + colorEnd)
+        this.displayManager.terminate(!planUnsuccessfull)
+        if (!planUnsuccessfull) this.flush()
+        if (planUnsuccessfull) console.log(redStart + "│ Errors found. For complete log open the below output file." + colorEnd)
         if (signal != "end-plan") displayOutput(this.outputFile)
         process.exit()
     }

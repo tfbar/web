@@ -35,7 +35,8 @@ module.exports.html = `<!doctype html>
       if (!node) {
         const li = document.createElement('li');
         node = document.createElement('ul');
-        li.innerHTML = '<summary class="'+type+'">' + type + "." + name + "</summary>"
+        const formattedId = id.replaceAll("module-","module.").replaceAll("-module",".module").replaceAll("data-","data.").replaceAll("-data",".data").replace("root-","")
+        li.innerHTML = '<summary class="'+type+'"><div class="tooltip">' + type + "." + name + '<span class="tooltiptext">' + formattedId + '</span></div></summary>'
         li.appendChild(node)
         ul.appendChild(li)
         node.id = id
@@ -65,8 +66,8 @@ module.exports.html = `<!doctype html>
         const commandContainer = document.getElementById("command-container")
         commandContainer.innerHTML = command
         const container = document.getElementById("container")
-        const text = await output.text()
-        container.innerHTML = command + text
+        const text =  await output.text()
+        container.innerHTML = text
         const linesArray = text.split("<br>")
         document.getElementById("root").innerHTML = ""
 
@@ -85,7 +86,7 @@ module.exports.html = `<!doctype html>
 /* fonts and basic setup */
 * {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-    line-height: 1.5;
+    line-height: 1.7;
     box-sizing: border-box;
     color: #44585d;
   }
@@ -135,7 +136,7 @@ module.exports.html = `<!doctype html>
   }
   #container{
     width: 60%;
-    font-size:14px;
+    font-size: small;
     text-align: left;
   }
   #content{
@@ -149,7 +150,7 @@ module.exports.html = `<!doctype html>
 
   #tree-container{
     --spacing : 1.5rem;
-    --radius  : 10px;
+    --radius  : 8px;
   }
   
   #tree-container li{
@@ -186,6 +187,7 @@ module.exports.html = `<!doctype html>
   #tree-container summary{
     display : block;
     cursor  : pointer;
+    font-size: small;
   }
   
   #tree-container summary::marker,
@@ -217,11 +219,10 @@ module.exports.html = `<!doctype html>
   #tree-container summary::before{
     content     : 'R';
     z-index     : 1;
-    font-size   : 12px;
-    line-height : 20px !important;
+    font-size   : smaller;
     background  : #696;
     color       : #fff;
-    line-height : calc(2 * var(--radius) - 2px);
+    line-height : calc(2 * var(--radius));
     text-align  : center;
   }
   #tree-container summary.module::before{
@@ -239,6 +240,37 @@ module.exports.html = `<!doctype html>
   #tree-container ul{
     text-align: left;
   }
+
+  /* Tooltip container */
+.tooltip {
+  position: relative;
+  display: inline-block;
+  /* border-bottom: 1px dotted black; If you want dots under the hoverable text */
+}
+
+/* Tooltip text */
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: auto;
+  min-width: 300px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+ 
+  /* Position the tooltip text - see examples below! */
+  position: absolute;
+  z-index: 1;
+  left: 10px;
+  margin-top: 25px;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+
 </style>
 
 </head>
