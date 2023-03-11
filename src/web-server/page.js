@@ -35,7 +35,7 @@ module.exports.html = `<!doctype html>
       if (!node) {
         const li = document.createElement('li');
         node = document.createElement('ul');
-        const formattedId = id.replaceAll("module-","module.").replaceAll("-module",".module").replaceAll("data-","data.").replaceAll("-data",".data").replace("root-","")
+        const formattedId = id.replaceAll("module-","module.").replaceAll("-module",".module").replaceAll("data-","data.").replaceAll("-data",".data").replace("root","")
         li.innerHTML = '<summary class="'+type+'"><div class="tooltip">' + type + "." + name + '<span class="tooltiptext">' + formattedId + '</span></div></summary>'
         li.appendChild(node)
         ul.appendChild(li)
@@ -144,7 +144,7 @@ module.exports.html = `<!doctype html>
   }
   #command-container{
     text-transform: capitalize;
-    height: 60px;
+    height: 70px;
   }
 
 
