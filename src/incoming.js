@@ -1,11 +1,7 @@
 const { Packet } = require("./packet");
-const { logOp, displayOutput } = require("./methods")
+const { logOp, displayOutput, errorsFoundTxt } = require("./methods")
 const { saveToOutputFile, saveTime } = require("./files")
 const newLine = "\n\r"
-const colorEnd = '\u001b[0m';
-const redStart = '\u001b[1;31m' 
-
-
 
 class IncomingHandler{
     db
@@ -13,24 +9,31 @@ class IncomingHandler{
     startTS
     uniqueId
     allOutput
+    outputFile
     stateManager
+    browserTabOpen
     localWebServer
     displayManager
-    outputFile
     tfPlanCompleted
 
     async logStart(){
         await logOp(this.db, {
             uId: this.uniqueId,
             ts: this.startTS,
-            op: "init"
+            op: "start"
         })
     }
-
     flush () {
 	    console.log(this.allOutput)
     }
-
+    async logBrowserTabStatus () {        
+        await logOp(this.db, {
+            uId: this.uniqueId,
+            ts: Date.now(),
+            op: "browser-" + (this.browserTabOpen ? "open" : " closed"),
+            command: this.command
+        })
+    }
     async handleIncoming (chunk) {
 
         this.allOutput += chunk + newLine
@@ -38,7 +41,10 @@ class IncomingHandler{
         const packet = new Packet(chunk)
         this.state = packet.state || this.state
         this.displayManager.enableDynamicOutput(!this.localWebServer.isBrowserTabOpen)
-        
+        const browserStatusChanged = this.browserTabOpen != this.localWebServer.isBrowserTabOpen
+        this.browserTabOpen = this.localWebServer.isBrowserTabOpen
+        if (browserStatusChanged) await this.logBrowserTabStatus(this.localWebServer.isBrowserTabOpen)
+
         if (packet.isResourceUpdate)
             this.displayManager.updateResourceStatus(
                 packet.resourceName,
@@ -82,7 +88,7 @@ class IncomingHandler{
         const planUnsuccessfull = !this.planSuccessul && this.command == "plan"
         this.displayManager.terminate(!planUnsuccessfull)
         if (!planUnsuccessfull) this.flush()
-        if (planUnsuccessfull) console.log(redStart + "│ Errors found. For complete log open the output file below." + colorEnd)
+        if (planUnsuccessfull) console.log(errorsFoundTxt)
         if (signal != "end-plan") displayOutput(this.outputFile)
         process.exit()
     }
@@ -91,6 +97,7 @@ class IncomingHandler{
     constructor(outputFile, db, displayManager, localWebServer){
         this.db = db
         this.allOutput = ""
+        this.browserTabOpen = false
         this.startTS = Date.now()
         this.outputFile = outputFile
         this.uniqueId = new Date().valueOf();
@@ -100,7 +107,8 @@ class IncomingHandler{
         // Bindings
         this.handleEndSignal = this.handleEndSignal.bind(this)
         this.handleIncoming = this.handleIncoming.bind(this)
-
+        this.logBrowserTabStatus = this.logBrowserTabStatus.bind(this)
+        
     }
 }
 

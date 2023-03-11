@@ -15,11 +15,14 @@ const newLine = "\n\r"
 const magentaStart = '\u001b[1;35m' 
 const blueStart = '\u001b[1;34m' 
 const colorEnd = '\u001b[0m';
+const redStart = '\u001b[1;31m' 
 const lastCommitsTxt = blueStart + "Last commits to branch" + colorEnd
 const gitStatisticsTxt = magentaStart + "Git Statistics" + colorEnd
 const changedFilesTxt = blueStart + "Files changed since last commit" + colorEnd
 const fullOutputText = outputFile => `\u001b${newLine}${newLine}${blueStart}Output file:\n\r${colorEnd}*  ${outputFile} `
-const fullOutputWeb = `\u001b${blueStart}Cmd + Click to open in browser:\n\r${colorEnd}* http://localhost:3500 `
+const fullOutputWeb = `\u001b${blueStart}Tree View log - Cmd + Click link to open:\n\r${colorEnd}* http://localhost:3500 `
+
+module.exports.errorsFoundTxt = redStart + "│" + newLine + "│ Errors found. For complete log open the output file below." + colorEnd 
 
 module.exports.calculateAverageDuration = (tfhFolder) => {
     const plans = []

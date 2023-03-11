@@ -25,7 +25,7 @@ class LocalWebServer{
     }
 
     get isBrowserTabOpen() {
-        return this.browserTabOpen
+        return !!this.browserTabOpen
     }
 
     launch() {
