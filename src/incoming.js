@@ -58,7 +58,6 @@ class IncomingHandler{
             this.displayManager.setCommand(packet.command)
             this.localWebServer.setCommand(packet.command)
             this.command = packet.command
-            console.clear()
         }
 
         const commandEnded = packet.endProcess && this.command
