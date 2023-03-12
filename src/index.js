@@ -10,7 +10,6 @@ const {
     getStaticText
 } = require("./methods")
 
-console.clear()
 const db = initFireBase()
 const { outputFile, tfhFolder } = initFileSystem()
 const localWebServer = new LocalWebServer()

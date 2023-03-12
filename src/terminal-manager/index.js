@@ -63,7 +63,7 @@ class TerminalManager{
     }
     get dynamicText(){
         const hasInput = this.dynamicResources.length > dynamicLines
-        if (this.dynamicResources.length == dynamicLines + 1) console.clear()
+        if ((this.dynamicResources.length == dynamicLines + 1) && hasInput) console.clear()
         const terminalBorder = hasInput ? border : ""
         const dynamic = this.dynamicResources.slice(-dynamicLines)
         const dText = dynamic.reduce(getDynamicLine, "")

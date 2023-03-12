@@ -11,6 +11,7 @@ class IncomingHandler{
     allOutput
     outputFile
     stateManager
+    planSuccessul
     browserTabOpen
     localWebServer
     displayManager
@@ -61,7 +62,7 @@ class IncomingHandler{
         }
 
         const commandEnded = packet.endProcess && this.command
-        this.planSuccessul = packet.planSuccessul
+        this.planSuccessul = (this.planSuccessul != null) || packet.planSuccessul
         if (commandEnded) this.handleEndSignal(packet.endProcess)
     }
 
@@ -103,6 +104,7 @@ class IncomingHandler{
         this.uniqueId = new Date().valueOf();
         this.displayManager = displayManager
         this.localWebServer = localWebServer
+        this.planSuccessul = null
         
         // Bindings
         this.handleEndSignal = this.handleEndSignal.bind(this)

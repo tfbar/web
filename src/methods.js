@@ -22,7 +22,7 @@ const changedFilesTxt = blueStart + "Files changed since last commit" + colorEnd
 const fullOutputText = outputFile => `\u001b${newLine}${newLine}${blueStart}Output file:\n\r${colorEnd}*  ${outputFile} `
 const fullOutputWeb = `\u001b${blueStart}Tree View log - Cmd + Click link to open:\n\r${colorEnd}* http://localhost:3500 `
 
-module.exports.errorsFoundTxt = redStart + "│" + newLine + "│ Errors found. For complete log open the output file below." + colorEnd 
+module.exports.errorsFoundTxt = redStart + "│" + newLine + "│ Errors found in above logs." + colorEnd 
 
 module.exports.calculateAverageDuration = (tfhFolder) => {
     const plans = []
