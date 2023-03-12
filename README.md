@@ -8,9 +8,9 @@
 
 ![](https://github.com/oferca/tf/blob/main/demo.gif)
 
-### Web insights and statistics:
+### Tree View Demo - click to view:
 
-![Log and insights](https://github.com/oferca/tf/blob/main/demo.png)
+[![Video Demo](https://img.youtube.com/vi/orrhT1PQYsw/0.jpg)](https://www.youtube.com/watch?v=orrhT1PQYsw)
 
 
 ## Prerequisite
