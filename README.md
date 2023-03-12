@@ -5,7 +5,7 @@
 ### How to use 
 
 
-![](https://github.com/oferca/tf/blob/main/demo-npx.gif)
+![](https://github.com/oferca/tf/blob/main/npx-tfh.gif)
 
 
 ### [Tree View Demo](https://www.youtube.com/watch?v=orrhT1PQYsw)
