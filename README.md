@@ -8,10 +8,7 @@
 ![](https://github.com/oferca/tf/blob/main/demo.gif)
 
 
-### Tree View Demo - click to view:
-
-[![Video Demo](https://img.youtube.com/vi/orrhT1PQYsw/0.jpg)](https://www.youtube.com/watch?v=orrhT1PQYsw)
-
+### [Tree View Demo](https://www.youtube.com/watch?v=orrhT1PQYsw)
 
 ## Prerequisite
 * Install [Node.js](https://nodejs.org/)
