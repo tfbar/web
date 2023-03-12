@@ -1,17 +1,14 @@
 # Terraform Progress Bar
-**A better experience waiting for "terraform plan" to complete.**
+### Watch progress of terraform cli commands
+#### No installation required
 
-* Watch progress and receieve insights.
-* Run in small terminals without losing information. 
+### How to use 
 
-### The progress bar: 
 
 ![](https://github.com/oferca/tf/blob/main/demo.gif)
 
-### Web insights and statistics:
 
-![Log and insights](https://github.com/oferca/tf/blob/main/demo.png)
-
+### [Tree View Demo](https://www.youtube.com/watch?v=orrhT1PQYsw)
 
 ## Prerequisite
 * Install [Node.js](https://nodejs.org/)
