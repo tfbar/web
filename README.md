@@ -22,8 +22,13 @@ For example:
 
 ####  In windows cmd / linux / mac 
 ```
-$ terraform plan | npx tfh
+$ terraform plan | npx github:oferca/tf 
 ```
+or
+```
+$ terraform plan | npx tfh@latest
+```
+
 
 ### Option 2: Permenant Installation
 #### In linux / mac 
