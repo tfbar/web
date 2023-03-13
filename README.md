@@ -12,21 +12,21 @@
 
 ## How to use 
 
-Pipe output to npx, for example:
+Pipe output to npx. For example:
 
-Instead of entering
-```
-$ terraform plan
-```
-Enter
+Use: 
 ```
 $ terraform plan | npx github:tfbar/web 
 ```
-To see the progress bar
+Instead of
+```
+$ terraform plan
+```
+And see the progress bar.
 
 ## Notes
 
-* You may also use npx if you want
+* You may also use npm package if preferred
 
 ```
 $ terraform plan | npx tfh@latest
