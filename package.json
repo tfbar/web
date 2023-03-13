@@ -1,6 +1,6 @@
 {
   "name": "tfh",
-  "version": "1.0.77",
+  "version": "1.0.78",
   "description": "Interractive Progress Bar for terraform commands",
   "homepage": "https://github.com/oferca/tf",
   "author": {
