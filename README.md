@@ -12,9 +12,7 @@
 
 ## How to use 
 
-Add " **| npx github:tfbar/web** " after a command
-
-For example:
+Pipe output to npx, for example:
 
 Instead of entering
 ```
@@ -24,10 +22,11 @@ Enter
 ```
 $ terraform plan | npx github:tfbar/web 
 ```
+To see the progress bar
 
 ## Notes
 
-* You may also use npx
+* You may also use npx if you want
 
 ```
 $ terraform plan | npx tfh@latest
