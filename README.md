@@ -16,7 +16,7 @@
 
 ## Setup options
 ### Option 1: Zero setup
-Add *' | npx github:oferca/tf'* or *' | npx tfh@latest'* to "terraform plan" (or other command).
+Add *' | npx github:oferca/tf'* or *' | npx tfh@latest'* to a terraform command.
 
 For example:
 
