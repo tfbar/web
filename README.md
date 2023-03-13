@@ -1,42 +1,47 @@
 # Terraform Progress Bar
-### Watch progress of terraform cli commands
-#### No installation required
+#### * No installation required
 
-### How to use 
-
+### Demo 
 
 ![](https://github.com/tfbar/web/blob/main/npx-tfh.gif)
 
-
-### [Tree View Demo](https://www.youtube.com/watch?v=orrhT1PQYsw)
+#### Also check out [Tree View Demo](https://www.youtube.com/watch?v=orrhT1PQYsw)
 
 ## Prerequisite
 * Install [Node.js](https://nodejs.org/)
 
+## How to use 
 
-## Setup options
-### Option 1: Zero setup
-Add *' | npx github:tfbar/web'* or *' | npx tfh@latest'* to a terraform command.
+Add " **| npx github:tfbar/web** " after a command
 
 For example:
 
-####  In windows cmd / linux / mac 
+Instead of entering
+```
+$ terraform plan
+```
+Enter
 ```
 $ terraform plan | npx github:tfbar/web 
 ```
-or
+
+## Notes
+
+* You may also use npx
+
 ```
 $ terraform plan | npx tfh@latest
 ```
+* On windows machine, prefer cmd over powershell for better experience
 
+### Permenant Installation
 
-### Option 2: Permenant Installation
 #### In linux / mac 
 Add the following line to your favorite shell config file: .zshrc, .bashrc, .bash_profile.
 ```
 $ iterraform(){ terraform "$@" | npx github:tfbar/web }
 ```
-Then use it:
+Then use like this:
 ```
 $ iterraform plan
 ```
