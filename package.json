@@ -1,12 +1,12 @@
 {
   "name": "tfh",
-  "version": "1.0.78",
+  "version": "1.0.79",
   "description": "Interractive Progress Bar for terraform commands",
-  "homepage": "https://github.com/oferca/tf",
+  "homepage": "https://github.com/tfbar/web",
   "author": {
     "name": "Ofer Kafry",
     "email": "ofer.c@hotmail.com",
-    "url": "https://github.com/oferca/tf"
+    "url": "https://github.com/tfbar/web"
   },
   "keywords": [
     "terraform",
@@ -29,7 +29,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/oferca/tf.git"
+    "url": "https://github.com/tfbar/web.git"
   },
   "scripts": {
     "serve": "firebase emulators:start --only functions",
