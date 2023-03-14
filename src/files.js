@@ -71,6 +71,8 @@ module.exports.saveToOutputFile = (chunk, outputFile) => chunk && fs.appendFileS
         replaceAll("[0m","").
         replaceAll("[4m","").
         replaceAll("[1m","").
+        replaceAll("[32m","").
+        replaceAll("","").
         replaceAll("[33m","") + "\n",
     function(err) {     
         if (err) throw err;
