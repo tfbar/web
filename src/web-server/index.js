@@ -13,7 +13,7 @@ class LocalWebServer{
     browserTabOpen
 
     addChunk (chunk) {
-        let packet = chunk.indexOf("│") > -1 ? chunk.replace("│", "<br>│") :  chunk + "<br>" 
+        let packet = chunk.indexOf("│") > -1 ? chunk.replace("│", "<br>│").replace(" + ", "<br> + ").replace(" + ", "<br> - ") :  chunk + "<br>" 
         this.output += packet
     }
     
