@@ -36,7 +36,6 @@ class IncomingHandler{
         })
     }
     async handleIncoming (chunk) {
-
         this.allOutput += chunk + newLine
         saveToOutputFile(chunk, this.outputFile)
         const packet = new Packet(chunk)
