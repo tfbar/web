@@ -2,6 +2,7 @@
 
 const { startService } = require("./start")
 const { initFileSystem } = require("./files.js")
+const { TerminalManager } = require("./terminal-manager/index.js")
 const {
     calculateAverageDuration,
     getStaticText
