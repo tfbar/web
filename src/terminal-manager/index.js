@@ -38,7 +38,6 @@ class TerminalManager{
         this.render()
     }
     displayStartupMsg () {
-        console.clear()
 	    console.log(startupMsg)
         clearCursor()
     }
